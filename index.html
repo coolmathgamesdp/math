@@ -1,0 +1,1046 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Arcade Hub</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#120024;
+    overflow:hidden;
+    color:white;
+    width:100vw;
+    height:100vh;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-1;
+}
+
+header{
+    height:80px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:42px;
+    font-weight:bold;
+    background:linear-gradient(90deg,#ff0080,#00ffff);
+    box-shadow:0 0 25px #ff00ff;
+}
+
+#container{
+    display:flex;
+    height:calc(100vh - 80px);
+    width:100%;
+    overflow:hidden;
+}
+
+#menu{
+    width:250px;
+    background:#1b0033;
+    border-right:4px solid #ff00ff;
+    padding:20px;
+}
+
+.gameBtn{
+    width:100%;
+    margin-bottom:15px;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.gameBtn:hover{
+    transform:scale(1.05);
+}
+
+#gameArea{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+}
+
+#flappy canvas{
+    width:min(95vw, 1100px);
+    height:auto;
+    max-height:85vh;
+}
+
+.gameScreen canvas{
+    width:min(95vw, 1100px);
+    height:auto;
+    max-height:85vh;
+}
+
+@media (max-width:900px){
+
+    body{
+        overflow:auto;
+    }
+
+    #container{
+        flex-direction:column;
+        height:auto;
+    }
+
+    #menu{
+        width:100%;
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:10px;
+        border-right:none;
+        border-bottom:4px solid #ff00ff;
+    }
+
+    .gameBtn{
+        margin-bottom:0;
+        font-size:16px;
+        padding:12px;
+    }
+
+    #gameArea{
+        min-height:70vh;
+        padding:10px;
+    }
+
+    .gameScreen{
+        width:100%;
+        height:100%;
+    }
+
+    .gameScreen canvas{
+        width:100%;
+        max-width:100%;
+        height:auto;
+        border-width:2px;
+    }
+
+    #minesweeper{
+        grid-template-columns:repeat(10,1fr);
+        width:100%;
+        max-width:420px;
+    }
+
+    .cell{
+        width:100%;
+        aspect-ratio:1/1;
+        height:auto;
+        font-size:18px;
+    }
+
+    #gameOverBox{
+        width:95%;
+        padding:20px;
+    }
+
+    #gameOverBox h1{
+        font-size:42px;
+    }
+
+    #gameOverBox button{
+        font-size:18px;
+        padding:12px 20px;
+    }
+
+    .startOverlay h1{
+        font-size:42px;
+    }
+}
+
+@media (max-width:600px){
+
+    header{
+        font-size:28px;
+        text-align:center;
+        padding:10px;
+    }
+
+    #menu{
+        grid-template-columns:1fr;
+    }
+
+    .gameSwitchers{
+        gap:6px;
+    }
+
+    .gameSwitchers button{
+        font-size:14px;
+        padding:8px 10px;
+    }
+}
+
+.gameScreen{
+    position:absolute;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+canvas{
+    background:black;
+    border:4px solid white;
+    border-radius:15px;
+    box-shadow:0 0 20px white;
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+}
+
+.flappy{background:#ff0080;}
+.mine{background:#00d4ff;}
+.snake{background:#00cc66;}
+.pong{background:#ffcc00;color:black;}
+.breakout{background:#ff6600;}
+
+.space{background:#ff3333;}
+
+#minesweeper{
+    display:grid;
+    grid-template-columns:repeat(10,40px);
+    gap:4px;
+}
+
+.cell{
+    width:40px;
+    height:40px;
+    background:#222;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.revealed{
+    background:#999;
+    color:black;
+}
+
+#gameOverMenu{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+#gameOverBox{
+    background:#111;
+    border:4px solid cyan;
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 0 30px cyan;
+}
+
+#gameOverBox h1{
+    font-size:60px;
+    color:#ff004c;
+    margin-bottom:20px;
+}
+
+#gameOverBox h2{
+    margin-bottom:30px;
+}
+
+#gameOverBox button{
+    padding:15px 40px;
+    font-size:24px;
+    border:none;
+    border-radius:10px;
+    background:cyan;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.gameSwitchers{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:25px;
+}
+
+.gameSwitchers button{
+    padding:10px 18px;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#222;
+    color:white;
+    border:2px solid cyan;
+}
+
+.activeGameButton{
+    background:cyan !important;
+    color:black !important;
+    box-shadow:0 0 15px cyan;
+}
+
+.startOverlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:5;
+}
+
+.startOverlay h1{
+    font-size:60px;
+    color:yellow;
+    text-shadow:0 0 20px yellow;
+    margin-bottom:20px;
+}
+
+.startOverlay button{
+    padding:15px 40px;
+    font-size:28px;
+    border:none;
+    border-radius:12px;
+    background:cyan;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<header>RETRO ARCADE HUB</header>
+
+<div id="container">
+
+<div id="menu">
+<button class="gameBtn flappy" onclick="showGame('flappy')">Flappy Bird</button>
+<button class="gameBtn mine" onclick="showGame('mine')">Minesweeper</button>
+<button class="gameBtn snake" onclick="showGame('snake')">Snake</button>
+<button class="gameBtn pong" onclick="showGame('pong')">Pong</button>
+<button class="gameBtn breakout" onclick="showGame('breakout')">Breakout</button>
+<button class="gameBtn space" onclick="showGame('space')">Space Shooter</button>
+</div>
+
+<div id="gameArea">
+
+<div id="flappy" class="gameScreen" style="display:flex;">
+<div class="startOverlay" id="flappyStart">
+<h1>FLAPPY BIRD</h1>
+<button onclick="startFlappy()">START</button>
+</div>
+<canvas id="flappyCanvas" width="900" height="600"></canvas>
+</div>
+
+<div id="mine" class="gameScreen">
+<div id="minesweeper"></div>
+</div>
+
+<div id="snake" class="gameScreen">
+<canvas id="snakeCanvas" width="500" height="500"></canvas>
+</div>
+
+<div id="pong" class="gameScreen">
+<canvas id="pongCanvas" width="700" height="500"></canvas>
+</div>
+
+<div id="breakout" class="gameScreen">
+<canvas id="breakCanvas" width="700" height="500"></canvas>
+</div>
+
+
+
+<div id="space" class="gameScreen">
+<canvas id="spaceCanvas" width="700" height="600"></canvas>
+</div>
+
+</div>
+</div>
+
+<div id="gameOverMenu">
+<div id="gameOverBox">
+<h1>GAME OVER</h1>
+<h2 id="finalScore">Score: 0</h2>
+
+<div class="gameSwitchers">
+<button onclick="showGame('flappy')">Flappy</button>
+<button onclick="showGame('snake')">Snake</button>
+<button onclick="showGame('pong')">Pong</button>
+<button onclick="showGame('breakout')">Breakout</button>
+<button onclick="showGame('space')">Space</button>
+</div>
+
+<button onclick="restartCurrentGame()">RESTART</button>
+</div>
+</div>
+
+<script>
+let currentGame = 'flappy';
+let gamePaused = false;
+let flappyStarted = false;
+
+function showGame(id){
+    currentGame = id;
+
+    document.querySelectorAll('.gameScreen').forEach(game=>{
+        game.style.display = 'none';
+    });
+
+    document.getElementById(id).style.display = 'flex';
+
+    hideGameOver();
+}
+
+function showGameOver(score){
+    gamePaused = true;
+
+    document.getElementById('gameOverMenu').style.display = 'flex';
+    document.getElementById('finalScore').innerHTML = 'Score: ' + score;
+
+    document.querySelectorAll('.gameSwitchers button')
+    .forEach(btn=>btn.classList.remove('activeGameButton'));
+
+    const map = {
+        flappy:0,
+        snake:1,
+        pong:2,
+        breakout:3,
+        space:4
+    };
+
+    const buttons = document.querySelectorAll('.gameSwitchers button');
+
+    if(buttons[map[currentGame]]){
+        buttons[map[currentGame]].classList.add('activeGameButton');
+    }
+}
+
+function hideGameOver(){
+    gamePaused = false;
+    document.getElementById('gameOverMenu').style.display = 'none';
+}
+
+function restartCurrentGame(){
+    hideGameOver();
+
+    if(currentGame === 'flappy') resetFlappy();
+    if(currentGame === 'snake') resetSnake();
+    if(currentGame === 'pong') resetPong();
+    if(currentGame === 'breakout') resetBreakout();
+    
+    if(currentGame === 'space') resetSpace();
+}
+
+function startFlappy(){
+    flappyStarted = true;
+    document.getElementById('flappyStart').style.display = 'none';
+}
+
+/* FLAPPY */
+const fCanvas = document.getElementById('flappyCanvas');
+const fctx = fCanvas.getContext('2d');
+
+let birdY = 250;
+let velocity = 0;
+let gravity = 0.5;
+let pipes = [];
+let flappyScore = 0;
+
+document.addEventListener('keydown', e=>{
+    if(currentGame !== 'flappy') return;
+    if(e.code === 'Space') velocity = -8;
+});
+
+function resetFlappy(){
+    birdY = 250;
+    velocity = 0;
+    pipes = [];
+    flappyScore = 0;
+}
+
+function addPipe(){
+    if(currentGame !== 'flappy') return;
+
+    let top = Math.random()*250 + 50;
+
+    pipes.push({
+        x:900,
+        top:top,
+        bottom:top+170,
+        scored:false
+    });
+}
+
+setInterval(addPipe,2000);
+
+function flappyLoop(){
+    requestAnimationFrame(flappyLoop);
+
+    if(currentGame !== 'flappy') return;
+    if(gamePaused) return;
+    if(!flappyStarted) return;
+
+    fctx.clearRect(0,0,900,600);
+
+    for(let i=0;i<40;i++){
+        fctx.fillStyle='white';
+        fctx.fillRect((i*140 + Date.now()/15)%900,(i*47)%600,2,2);
+    }
+
+    velocity += gravity;
+    birdY += velocity;
+
+    fctx.shadowBlur = 20;
+    fctx.shadowColor = 'yellow';
+    fctx.fillStyle = 'yellow';
+    fctx.beginPath();
+    fctx.arc(100,birdY,20,0,Math.PI*2);
+    fctx.fill();
+
+    fctx.fillStyle='#00ff88';
+    fctx.shadowColor='#00ff88';
+
+    pipes.forEach(pipe=>{
+        pipe.x -= 3;
+
+        fctx.fillRect(pipe.x,0,60,pipe.top);
+        fctx.fillRect(pipe.x,pipe.bottom,60,600);
+
+        if(!pipe.scored && pipe.x < 100){
+            flappyScore++;
+            pipe.scored = true;
+        }
+
+        if(120 > pipe.x && 80 < pipe.x + 60 && (birdY - 20 < pipe.top || birdY + 20 > pipe.bottom)){
+            showGameOver(flappyScore);
+            resetFlappy();
+        }
+    });
+
+    if(birdY < 0 || birdY > 600){
+        showGameOver(flappyScore);
+        resetFlappy();
+    }
+
+    fctx.shadowBlur = 0;
+    fctx.fillStyle='white';
+    fctx.font='30px Arial';
+    fctx.fillText('Score: ' + flappyScore,20,40);
+
+    // ground glow
+    fctx.fillStyle='#222';
+    fctx.fillRect(0,580,900,20);
+}
+
+flappyLoop();
+
+/* MINESWEEPER */
+const mineBoard = document.getElementById('minesweeper');
+
+function buildMines(){
+    mineBoard.innerHTML='';
+
+    for(let i=0;i<100;i++){
+        const cell = document.createElement('div');
+        cell.className='cell';
+
+        const mine = Math.random() < 0.15;
+
+        cell.onclick=function(){
+            if(mine){
+                cell.innerHTML='💣';
+                cell.style.background='red';
+                setTimeout(buildMines,500);
+            }else{
+                cell.classList.add('revealed');
+                cell.innerHTML='⭐';
+            }
+        }
+
+        mineBoard.appendChild(cell);
+    }
+}
+
+buildMines();
+
+/* SNAKE */
+const sCanvas = document.getElementById('snakeCanvas');
+const sctx = sCanvas.getContext('2d');
+
+let snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+let food={x:15,y:15};
+let dx=1;
+let dy=0;
+
+document.addEventListener('keydown',e=>{
+    if(currentGame !== 'snake') return;
+
+    // UP or W
+    if((e.key==='ArrowUp' || e.key==='w' || e.key==='W') && dy===0){
+        dx=0;
+        dy=-1;
+    }
+
+    // DOWN or S
+    if((e.key==='ArrowDown' || e.key==='s' || e.key==='S') && dy===0){
+        dx=0;
+        dy=1;
+    }
+
+    // LEFT or A
+    if((e.key==='ArrowLeft' || e.key==='a' || e.key==='A') && dx===0){
+        dx=-1;
+        dy=0;
+    }
+
+    // RIGHT or D
+    if((e.key==='ArrowRight' || e.key==='d' || e.key==='D') && dx===0){
+        dx=1;
+        dy=0;
+    }
+});
+
+function resetSnake(){
+    snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+    dx=1;
+    dy=0;
+}
+
+function snakeLoop(){
+    setTimeout(snakeLoop,120);
+
+    if(currentGame !== 'snake') return;
+    if(gamePaused) return;
+
+    sctx.fillStyle='black';
+    sctx.fillRect(0,0,500,500);
+
+    let head={x:snake[0].x+dx,y:snake[0].y+dy};
+
+    if(head.x<0 || head.y<0 || head.x>=25 || head.y>=25){
+        showGameOver(snake.length-3);
+        resetSnake();
+        return;
+    }
+
+    for(let part of snake){
+        if(head.x===part.x && head.y===part.y){
+            showGameOver(snake.length-3);
+            resetSnake();
+            return;
+        }
+    }
+
+    snake.unshift(head);
+
+    if(head.x===food.x && head.y===food.y){
+        food={x:Math.floor(Math.random()*25),y:Math.floor(Math.random()*25)};
+    }else{
+        snake.pop();
+    }
+
+    sctx.fillStyle='red';
+    sctx.shadowBlur=20;
+    sctx.shadowColor='red';
+    sctx.fillRect(food.x*20,food.y*20,20,20);
+
+    snake.forEach((part,index)=>{
+        sctx.fillStyle=index===0 ? '#00ff88' : '#00aa55';
+        sctx.fillRect(part.x*20,part.y*20,18,18);
+    });
+
+    sctx.shadowBlur=0;
+}
+
+snakeLoop();
+
+/* PONG */
+const pongCanvas=document.getElementById('pongCanvas');
+const pctx=pongCanvas.getContext('2d');
+
+let paddleY=200;
+let aiY=200;
+let ballX=350;
+let ballY=250;
+let ballDX=5;
+let ballDY=4;
+let pongScore=0;
+
+window.addEventListener('mousemove',e=>{
+    if(currentGame !== 'pong') return;
+    paddleY=e.clientY-150;
+});
+
+function resetPong(){
+    ballX=350;
+    ballY=250;
+    ballDX=5;
+    ballDY=4;
+    pongScore=0;
+}
+
+function pongLoop(){
+    requestAnimationFrame(pongLoop);
+
+    if(currentGame !== 'pong') return;
+    if(gamePaused) return;
+
+    pctx.fillStyle='black';
+    pctx.fillRect(0,0,700,500);
+
+    pctx.fillStyle='white';
+    for(let i=0;i<500;i+=30){
+        pctx.fillRect(347,i,6,20);
+    }
+
+    pctx.fillStyle='cyan';
+    pctx.fillRect(20,paddleY,15,100);
+
+    pctx.fillStyle='red';
+    pctx.fillRect(665,aiY,15,100);
+
+    pctx.fillStyle='white';
+    pctx.beginPath();
+    pctx.arc(ballX,ballY,10,0,Math.PI*2);
+    pctx.fill();
+
+    ballX+=ballDX;
+    ballY+=ballDY;
+
+    aiY+=(ballY-(aiY+50))*0.05;
+
+    if(ballY<0 || ballY>500) ballDY*=-1;
+
+    if(ballX<35 && ballY>paddleY && ballY<paddleY+100){
+        ballDX*=-1;
+        pongScore++;
+    }
+
+    if(ballX>665 && ballY>aiY && ballY<aiY+100){
+        ballDX*=-1;
+    }
+
+    if(ballX<0){
+        showGameOver(pongScore);
+        resetPong();
+    }
+
+    pctx.fillText('Score: '+pongScore,20,40);
+}
+
+pongLoop();
+
+/* BREAKOUT */
+const breakCanvas=document.getElementById('breakCanvas');
+const bctx=breakCanvas.getContext('2d');
+
+let breakBallX=350;
+let breakBallY=250;
+let breakDX=4;
+let breakDY=-4;
+let paddleX=300;
+let breakoutScore=0;
+let bricks=[];
+
+function buildBricks(){
+    bricks=[];
+
+    for(let r=0;r<5;r++){
+        for(let c=0;c<10;c++){
+            bricks.push({x:c*65+20,y:r*35+40,hit:false});
+        }
+    }
+}
+
+buildBricks();
+
+window.addEventListener('mousemove',e=>{
+    if(currentGame !== 'breakout') return;
+    paddleX=e.clientX-120;
+});
+
+function resetBreakout(){
+    breakBallX=350;
+    breakBallY=250;
+    breakDX=4;
+    breakDY=-4;
+    breakoutScore=0;
+    buildBricks();
+}
+
+function breakoutLoop(){
+    requestAnimationFrame(breakoutLoop);
+
+    if(currentGame !== 'breakout') return;
+    if(gamePaused) return;
+
+    bctx.fillStyle='black';
+    bctx.fillRect(0,0,700,500);
+
+    bricks.forEach(brick=>{
+        if(brick.hit) return;
+
+        bctx.fillStyle='#ff6600';
+        bctx.fillRect(brick.x,brick.y,60,25);
+
+        if(breakBallX>brick.x && breakBallX<brick.x+60 && breakBallY>brick.y && breakBallY<brick.y+25){
+            brick.hit=true;
+            breakDY*=-1;
+            breakoutScore++;
+        }
+    });
+
+    bctx.fillStyle='cyan';
+    bctx.fillRect(paddleX,460,120,15);
+
+    bctx.fillStyle='white';
+    bctx.beginPath();
+    bctx.arc(breakBallX,breakBallY,10,0,Math.PI*2);
+    bctx.fill();
+
+    breakBallX+=breakDX;
+    breakBallY+=breakDY;
+
+    if(breakBallX<0 || breakBallX>700) breakDX*=-1;
+    if(breakBallY<0) breakDY*=-1;
+
+    if(breakBallY>460 && breakBallX>paddleX && breakBallX<paddleX+120){
+        breakDY*=-1;
+    }
+
+    if(breakBallY>500){
+        showGameOver(breakoutScore);
+        resetBreakout();
+    }
+}
+
+breakoutLoop();
+
+
+
+/* SPACE SHOOTER */
+const spaceCanvas=document.getElementById('spaceCanvas');
+const spctx=spaceCanvas.getContext('2d');
+
+let shipX=320;
+let shipY=540;
+let bullets=[];
+let enemies=[];
+let stars=[];
+let spaceScore=0;
+let moveLeft=false;
+let moveRight=false;
+
+for(let i=0;i<80;i++){
+    stars.push({
+        x:Math.random()*700,
+        y:Math.random()*600,
+        speed:Math.random()*2+1
+    });
+}
+
+window.addEventListener('keydown',e=>{
+    if(currentGame !== 'space') return;
+
+    if(e.key==='ArrowLeft' || e.key==='a' || e.key==='A'){
+        moveLeft=true;
+    }
+
+    if(e.key==='ArrowRight' || e.key==='d' || e.key==='D'){
+        moveRight=true;
+    }
+
+    if(e.code==='Space'){
+        bullets.push({x:shipX+27,y:shipY});
+    }
+});
+
+window.addEventListener('keyup',e=>{
+    if(e.key==='ArrowLeft' || e.key==='a' || e.key==='A'){
+        moveLeft=false;
+    }
+
+    if(e.key==='ArrowRight' || e.key==='d' || e.key==='D'){
+        moveRight=false;
+    }
+});
+
+function spawnEnemy(){
+    enemies.push({
+        x:Math.random()*640,
+        y:-40,
+        speed:Math.random()*2+2
+    });
+}
+
+setInterval(()=>{
+    if(currentGame==='space' && !gamePaused){
+        spawnEnemy();
+    }
+},900);
+
+function resetSpace(){
+    bullets=[];
+    enemies=[];
+    spaceScore=0;
+    shipX=320;
+}
+
+function drawShip(){
+    spctx.shadowBlur=20;
+    spctx.shadowColor='cyan';
+
+    spctx.fillStyle='cyan';
+
+    spctx.beginPath();
+    spctx.moveTo(shipX+30,shipY);
+    spctx.lineTo(shipX,shipY+50);
+    spctx.lineTo(shipX+60,shipY+50);
+    spctx.closePath();
+    spctx.fill();
+
+    spctx.fillStyle='white';
+    spctx.fillRect(shipX+25,shipY+15,10,20);
+
+    spctx.shadowBlur=0;
+}
+
+function spaceLoop(){
+    requestAnimationFrame(spaceLoop);
+
+    if(currentGame !== 'space') return;
+    if(gamePaused) return;
+
+    spctx.fillStyle='black';
+    spctx.fillRect(0,0,700,600);
+
+    // animated stars
+    stars.forEach(star=>{
+        star.y += star.speed;
+
+        if(star.y > 600){
+            star.y = 0;
+            star.x = Math.random()*700;
+        }
+
+        spctx.fillStyle='white';
+        spctx.fillRect(star.x,star.y,2,2);
+    });
+
+    // movement
+    if(moveLeft) shipX -= 6;
+    if(moveRight) shipX += 6;
+
+    if(shipX < 0) shipX = 0;
+    if(shipX > 640) shipX = 640;
+
+    drawShip();
+
+    // bullets
+    bullets = bullets.filter(b=>b.y > -20 && !b.hit);
+
+    bullets.forEach(b=>{
+        b.y -= 10;
+
+        spctx.shadowBlur=10;
+        spctx.shadowColor='yellow';
+
+        spctx.fillStyle='yellow';
+        spctx.fillRect(b.x,b.y,6,18);
+
+        spctx.shadowBlur=0;
+    });
+
+    // enemies
+    enemies.forEach(enemy=>{
+        if(enemy.y > 600 && !enemy.missed){
+            enemy.missed = true;
+            spaceScore = Math.max(0, spaceScore - 1);
+        }
+    });
+
+    enemies = enemies.filter(enemy=>enemy.y < 700 && !enemy.hit);
+
+    enemies.forEach(enemy=>{
+        enemy.y += enemy.speed;
+
+        spctx.shadowBlur=20;
+        spctx.shadowColor='red';
+
+        spctx.fillStyle='red';
+        spctx.fillRect(enemy.x,enemy.y,40,40);
+
+        spctx.fillStyle='orange';
+        spctx.fillRect(enemy.x+10,enemy.y+10,20,20);
+
+        spctx.shadowBlur=0;
+
+        // collision with bullets
+        bullets.forEach(b=>{
+            if(
+                !enemy.hit &&
+                b.x < enemy.x + 40 &&
+                b.x + 6 > enemy.x &&
+                b.y < enemy.y + 40 &&
+                b.y + 18 > enemy.y
+            ){
+                enemy.hit = true;
+                b.hit = true;
+                spaceScore++;
+            }
+        });
+
+        // collision with player
+        if(
+            enemy.x < shipX + 60 &&
+            enemy.x + 40 > shipX &&
+            enemy.y < shipY + 50 &&
+            enemy.y + 40 > shipY
+        ){
+            showGameOver(spaceScore);
+            resetSpace();
+        }
+    });
+
+    // HUD
+    spctx.fillStyle='white';
+    spctx.font='30px Arial';
+    spctx.fillText('Score: ' + spaceScore,20,40);
+
+    spctx.font='18px Arial';
+    spctx.fillText('A/D or Arrow Keys to Move • SPACE to Shoot',20,75);
+}
+
+spaceLoop();
+</script>
+</body>
+</html>
+```
