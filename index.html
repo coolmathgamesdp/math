@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -768,23 +768,144 @@ let breakDX=4;
 let breakDY=-4;
 let paddleX=300;
 let breakoutScore=0;
+let breakoutLevel=1;
 let bricks=[];
+let powerups=[];
+let activePowerups=[];
+let showingLevelUp=false;
+let paddleWidth=120;
+let shieldActive=false;
+let paddleSpeed=8;
+let breakoutLeft=false;
+let breakoutRight=false;
 
 function buildBricks(){
     bricks=[];
 
-    for(let r=0;r<5;r++){
-        for(let c=0;c<10;c++){
-            bricks.push({x:c*65+20,y:r*35+40,hit:false});
-        }
+    function addBrick(col,row,colorShift=0){
+        bricks.push({
+            x:col*65+20,
+            y:row*35+40,
+            width:60,
+            height:25,
+            color:`hsl(${(col*25 + row*15 + colorShift)%360},100%,60%)`,
+            hit:false
+        });
     }
+
+    const patterns=[
+
+        // SOLID WALL
+        function(){
+            for(let row=0; row<6; row++){
+                for(let col=0; col<10; col++){
+                    addBrick(col,row,0);
+                }
+            }
+        },
+
+        // PERFECT PYRAMID
+        function(){
+            const center=4.5;
+
+            for(let row=0; row<6; row++){
+                const width=10-row*2;
+                const start=Math.floor(center-width/2+0.5);
+
+                for(let col=start; col<start+width; col++){
+                    addBrick(col,row,60);
+                }
+            }
+        },
+
+        // DIAMOND SHAPE
+        function(){
+            const rows=[
+                [4,5],
+                [3,4,5,6],
+                [2,3,4,5,6,7],
+                [1,2,3,4,5,6,7,8],
+                [2,3,4,5,6,7],
+                [3,4,5,6],
+                [4,5]
+            ];
+
+            rows.forEach((cols,row)=>{
+                cols.forEach(col=>{
+                    addBrick(col,row,120);
+                });
+            });
+        },
+
+        // CHECKERBOARD
+        function(){
+            for(let row=0; row<6; row++){
+                for(let col=0; col<10; col++){
+                    if((row+col)%2===0){
+                        addBrick(col,row,180);
+                    }
+                }
+            }
+        },
+
+        // TUNNEL
+        function(){
+            for(let row=0; row<6; row++){
+                for(let col=0; col<10; col++){
+                    if(col===4 || col===5) continue;
+                    addBrick(col,row,240);
+                }
+            }
+        },
+
+        // X SHAPE
+        function(){
+            for(let row=0; row<7; row++){
+                for(let col=0; col<10; col++){
+                    if(col===row || col===9-row){
+                        addBrick(col,row,300);
+                    }
+                }
+            }
+        },
+
+        // STAIRS
+        function(){
+            for(let row=0; row<7; row++){
+                for(let col=0; col<=row+2; col++){
+                    addBrick(col,row,30);
+                }
+            }
+        }
+    ];
+
+    const randomPattern=patterns[Math.floor(Math.random()*patterns.length)];
+
+    randomPattern();
 }
 
 buildBricks();
 
-window.addEventListener('mousemove',e=>{
+window.addEventListener('keydown',e=>{
     if(currentGame !== 'breakout') return;
-    paddleX=e.clientX-120;
+
+    if(e.key==='a' || e.key==='A' || e.key==='ArrowLeft'){
+        breakoutLeft=true;
+    }
+
+    if(e.key==='d' || e.key==='D' || e.key==='ArrowRight'){
+        breakoutRight=true;
+    }
+});
+
+window.addEventListener('keyup',e=>{
+    if(e.key==='a' || e.key==='A' || e.key==='ArrowLeft'){
+        breakoutLeft=false;
+    }
+
+    if(e.key==='d' || e.key==='D' || e.key==='ArrowRight'){
+        breakoutRight=false;
+    }
 });
 
 function resetBreakout(){
@@ -792,7 +913,9 @@ function resetBreakout(){
     breakBallY=250;
     breakDX=4;
     breakDY=-4;
+    paddleX=300;
     breakoutScore=0;
+    breakoutLevel=1;
     buildBricks();
 }
 
@@ -800,7 +923,6 @@ function breakoutLoop(){
     requestAnimationFrame(breakoutLoop);
 
     if(currentGame !== 'breakout') return;
-    if(gamePaused) return;
 
     bctx.fillStyle='black';
     bctx.fillRect(0,0,700,500);
@@ -808,43 +930,253 @@ function breakoutLoop(){
     bricks.forEach(brick=>{
         if(brick.hit) return;
 
-        bctx.fillStyle='#ff6600';
-        bctx.fillRect(brick.x,brick.y,60,25);
+        bctx.shadowBlur=15;
+        bctx.shadowColor=brick.color;
+        bctx.fillStyle=brick.color;
+        bctx.fillRect(brick.x,brick.y,brick.width,brick.height);
 
-        if(breakBallX>brick.x && breakBallX<brick.x+60 && breakBallY>brick.y && breakBallY<brick.y+25){
+        if(
+            breakBallX > brick.x &&
+            breakBallX < brick.x + brick.width &&
+            breakBallY > brick.y &&
+            breakBallY < brick.y + brick.height
+        ){
             brick.hit=true;
             breakDY*=-1;
             breakoutScore++;
+
+            // random powerup drop
+            if(Math.random() < 0.2){
+                powerups.push({
+                    x:brick.x + 25,
+                    y:brick.y,
+                    type:['wide','slow','multi','shield','speed','laser'][Math.floor(Math.random()*6)]
+                });
+            }
         }
     });
 
+    bctx.shadowBlur=0;
+
+    const remainingBricks=bricks.filter(brick=>!brick.hit);
+
+    if(remainingBricks.length===0 && !showingLevelUp){
+        showingLevelUp=true;
+
+        setTimeout(()=>{
+            breakoutLevel++;
+
+            breakBallX=350;
+            breakBallY=250;
+
+            breakDX = breakDX > 0 ? 4 + breakoutLevel*0.3 : -4 - breakoutLevel*0.3;
+            breakDY = breakDY > 0 ? 4 + breakoutLevel*0.3 : -4 - breakoutLevel*0.3;
+
+            paddleX=300;
+
+            buildBricks();
+
+            powerups=[];
+
+            showingLevelUp=false;
+        },2000);
+    }
+
+    // powerups
+    powerups.forEach(power=>{
+        power.y += 3;
+
+        const styles={
+            wide:{color:'#00ffff',label:'W'},
+            slow:{color:'#00ff66',label:'S'},
+            multi:{color:'#ffcc00',label:'M'},
+            shield:{color:'#3399ff',label:'H'},
+            speed:{color:'#ff4444',label:'F'},
+            laser:{color:'#ff00ff',label:'L'}
+        };
+
+        const style=styles[power.type];
+
+        bctx.shadowBlur=20;
+        bctx.shadowColor=style.color;
+
+        // unique shapes
+        if(power.type==='shield'){
+            bctx.strokeStyle=style.color;
+            bctx.lineWidth=4;
+            bctx.beginPath();
+            bctx.arc(power.x,power.y,14,0,Math.PI*2);
+            bctx.stroke();
+        }
+        else if(power.type==='laser'){
+            bctx.fillStyle=style.color;
+            bctx.fillRect(power.x-6,power.y-14,12,28);
+        }
+        else if(power.type==='speed'){
+            bctx.beginPath();
+            bctx.fillStyle=style.color;
+            bctx.moveTo(power.x,power.y-14);
+            bctx.lineTo(power.x+14,power.y);
+            bctx.lineTo(power.x,power.y+14);
+            bctx.lineTo(power.x-14,power.y);
+            bctx.closePath();
+            bctx.fill();
+        }
+        else{
+            bctx.fillStyle=style.color;
+            bctx.beginPath();
+            bctx.arc(power.x,power.y,12,0,Math.PI*2);
+            bctx.fill();
+        }
+
+        bctx.fillStyle='white';
+        bctx.font='bold 12px Arial';
+        bctx.fillText(style.label,power.x-5,power.y+4);
+
+        bctx.shadowBlur=0;
+
+        // collect powerup
+        if(
+            power.y > 450 &&
+            power.x > paddleX &&
+            power.x < paddleX + paddleWidth
+        ){
+            const alreadyActive = activePowerups.find(p=>p.type===power.type);
+
+            if(!alreadyActive){
+
+                if(power.type==='wide'){
+                    paddleWidth=180;
+                    activePowerups.push({type:'wide',time:600});
+                }
+
+                if(power.type==='slow'){
+                    breakDX*=0.7;
+                    breakDY*=0.7;
+                    activePowerups.push({type:'slow',time:600});
+                }
+
+                if(power.type==='multi'){
+                    breakoutScore += 5;
+                }
+
+                if(power.type==='shield'){
+                    shieldActive=true;
+                    activePowerups.push({type:'shield',time:900});
+                }
+
+                if(power.type==='speed'){
+                    paddleSpeed=14;
+                    activePowerups.push({type:'speed',time:700});
+                }
+
+                if(power.type==='laser'){
+                    activePowerups.push({type:'laser',time:700});
+                }
+            }
+
+            power.collected=true;
+        }
+    });
+
+    powerups = powerups.filter(power=>!power.collected && power.y < 520);
+
+    if(showingLevelUp){
+        bctx.fillStyle='rgba(0,0,0,0.82)';
+        bctx.fillRect(0,0,700,500);
+
+        bctx.shadowBlur=25;
+        bctx.shadowColor='yellow';
+
+        bctx.fillStyle='yellow';
+        bctx.font='70px Arial';
+        bctx.fillText('LEVEL UP!',140,220);
+
+        bctx.font='34px Arial';
+        bctx.fillText('LEVEL ' + breakoutLevel + ' COMPLETE',150,290);
+
+        bctx.shadowBlur=0;
+
+        return;
+    }
+
+    if(breakoutLeft) paddleX -= paddleSpeed;
+    if(breakoutRight) paddleX += paddleSpeed;
+
+    if(paddleX < 0) paddleX = 0;
+    if(paddleX > 700-paddleWidth) paddleX = 700-paddleWidth;
+
     bctx.fillStyle='cyan';
-    bctx.fillRect(paddleX,460,120,15);
+    bctx.fillRect(paddleX,460,paddleWidth,15);
 
     bctx.fillStyle='white';
     bctx.beginPath();
     bctx.arc(breakBallX,breakBallY,10,0,Math.PI*2);
     bctx.fill();
 
-    breakBallX+=breakDX;
-    breakBallY+=breakDY;
+    breakBallX += breakDX;
+    breakBallY += breakDY;
 
-    if(breakBallX<0 || breakBallX>700) breakDX*=-1;
-    if(breakBallY<0) breakDY*=-1;
-
-    if(breakBallY>460 && breakBallX>paddleX && breakBallX<paddleX+120){
-        breakDY*=-1;
+    if(breakBallX < 0 || breakBallX > 700){
+        breakDX *= -1;
     }
 
-    if(breakBallY>500){
-        showGameOver(breakoutScore);
-        resetBreakout();
+    if(breakBallY < 0){
+        breakDY *= -1;
     }
+
+    if(
+        breakBallY > 450 &&
+        breakBallX > paddleX &&
+        breakBallX < paddleX + paddleWidth
+    ){
+        breakDY *= -1;
+    }
+
+    if(breakBallY > 500){
+        if(shieldActive){
+            shieldActive=false;
+            breakBallY=250;
+            breakBallX=350;
+            breakDY=-4;
+        }else{
+            showGameOver(breakoutScore);
+            resetBreakout();
+        }
+    }
+
+    bctx.fillStyle='white';
+    bctx.font='24px Arial';
+    bctx.fillText('Score: ' + breakoutScore,20,30);
+    bctx.fillText('Level: ' + breakoutLevel,20,60);
+
+    // active powerups
+    activePowerups.forEach(power=>{
+        power.time--;
+    });
+
+    activePowerups = activePowerups.filter(power=>power.time > 0);
+
+    // expire effects
+    if(!activePowerups.find(p=>p.type==='wide')){
+        paddleWidth=120;
+    }
+
+    if(!activePowerups.find(p=>p.type==='speed')){
+        paddleSpeed=8;
+    }
+
+    if(!activePowerups.find(p=>p.type==='shield')){
+        shieldActive=false;
+    }
+
+    bctx.font='18px Arial';
+    activePowerups.forEach((power,index)=>{
+        bctx.fillText(power.type.toUpperCase(),520,30 + index*24);
+    });
 }
 
 breakoutLoop();
-
-
 
 /* SPACE SHOOTER */
 const spaceCanvas=document.getElementById('spaceCanvas');
