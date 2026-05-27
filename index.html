@@ -1,791 +1,1396 @@
-```html
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 
 
 
+
+
+
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Retro Arcade Hub</title>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Retro Arcade Hub</title>
 
 
 
 
-  <style>
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: Arial, Helvetica, sans-serif;
-      }
 
 
 
 
-      body {
-          background: #120024;
-          overflow: hidden;
-          color: white;
-          width: 100vw;
-          height: 100vh;
-      }
+ <style>
+     * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+         font-family: Arial, Helvetica, sans-serif;
+     }
 
 
 
 
-      body::before {
-          content: "";
-          position: fixed;
-          inset: 0;
-          background:
-              linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-          background-size: 40px 40px;
-          z-index: -1;
-      }
 
 
 
 
-      header {
-          height: 80px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 42px;
-          font-weight: bold;
-          background: linear-gradient(90deg, #ff0080, #00ffff);
-          box-shadow: 0 0 25px #ff00ff;
-      }
+     body {
+         background: #120024;
+         overflow: hidden;
+         color: white;
+         width: 100vw;
+         height: 100vh;
+     }
 
 
 
 
-      #container {
-          display: flex;
-          height: calc(100vh - 80px);
-          width: 100%;
-          overflow: hidden;
-      }
 
 
 
 
-      #menu {
-          width: 250px;
-          background: #1b0033;
-          border-right: 4px solid #ff00ff;
-          padding: 20px;
-      }
+     body::before {
+         content: "";
+         position: fixed;
+         inset: 0;
+         background:
+             linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+             linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+         background-size: 40px 40px;
+         z-index: -1;
+     }
 
 
 
 
-      .gameBtn {
-          width: 100%;
-          margin-bottom: 15px;
-          padding: 15px;
-          border: none;
-          border-radius: 10px;
-          color: white;
-          font-size: 18px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: 0.2s;
-      }
 
 
 
 
-      .gameBtn:hover {
-          transform: scale(1.05);
-      }
+     header {
+         height: 80px;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         font-size: 42px;
+         font-weight: bold;
+         background: linear-gradient(90deg, #ff0080, #00ffff);
+         box-shadow: 0 0 25px #ff00ff;
+     }
 
 
 
 
-      #gameArea {
-          flex: 1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-          overflow: hidden;
-      }
 
 
 
 
-      #flappy canvas {
-          width: min(95vw, 1100px);
-          height: auto;
-          max-height: 85vh;
-      }
+     #container {
+         display: flex;
+         height: calc(100vh - 80px);
+         width: 100%;
+         overflow: hidden;
+     }
 
 
 
 
-      .gameScreen canvas {
-          width: min(95vw, 1100px);
-          height: auto;
-          max-height: 85vh;
-      }
 
 
 
 
-      @media (max-width:900px) {
+     #menu {
+         width: 250px;
+         background: #1b0033;
+         border-right: 4px solid #ff00ff;
+         padding: 20px;
+     }
 
 
 
 
-          body {
-              overflow: auto;
-          }
 
 
 
 
-          #container {
-              flex-direction: column;
-              height: auto;
-          }
+     .gameBtn {
+         width: 100%;
+         margin-bottom: 15px;
+         padding: 15px;
+         border: none;
+         border-radius: 10px;
+         color: white;
+         font-size: 18px;
+         font-weight: bold;
+         cursor: pointer;
+         transition: 0.2s;
+     }
 
 
 
 
-          #menu {
-              width: 100%;
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              gap: 10px;
-              border-right: none;
-              border-bottom: 4px solid #ff00ff;
-          }
 
 
 
 
-          .gameBtn {
-              margin-bottom: 0;
-              font-size: 16px;
-              padding: 12px;
-          }
+     .gameBtn:hover {
+         transform: scale(1.05);
+     }
 
 
 
 
-          #gameArea {
-              min-height: 70vh;
-              padding: 10px;
-          }
 
 
 
 
-          .gameScreen {
-              width: 100%;
-              height: 100%;
-          }
+     #gameArea {
+         flex: 1;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         position: relative;
+         overflow: hidden;
+     }
 
 
 
 
-          .gameScreen canvas {
-              width: 100%;
-              max-width: 100%;
-              height: auto;
-              border-width: 2px;
-          }
 
 
 
 
-          #minesweeper {
-              grid-template-columns: repeat(10, 1fr);
-              width: 100%;
-              max-width: 420px;
-          }
+     #flappy canvas {
+         width: min(95vw, 1100px);
+         height: auto;
+         max-height: 85vh;
+     }
 
 
 
 
-          .cell {
-              width: 100%;
-              aspect-ratio: 1/1;
-              height: auto;
-              font-size: 18px;
-          }
 
 
 
 
-          #gameOverBox {
-              width: 95%;
-              padding: 20px;
-          }
+     .gameScreen canvas {
+         width: min(95vw, 1100px);
+         height: auto;
+         max-height: 85vh;
+     }
 
 
 
 
-          #gameOverBox h1 {
-              font-size: 42px;
-          }
 
 
 
 
-          #gameOverBox button {
-              font-size: 18px;
-              padding: 12px 20px;
-          }
+     @media (max-width:900px) {
 
 
 
 
-          .startOverlay h1 {
-              font-size: 42px;
-          }
-      }
 
 
 
 
-      @media (max-width:600px) {
+         body {
+             overflow: auto;
+         }
 
 
 
 
-          header {
-              font-size: 28px;
-              text-align: center;
-              padding: 10px;
-          }
 
 
 
 
-          #menu {
-              grid-template-columns: 1fr;
-          }
+         #container {
+             flex-direction: column;
+             height: auto;
+         }
 
 
 
 
-          .gameSwitchers {
-              gap: 6px;
-          }
 
 
 
 
-          .gameSwitchers button {
-              font-size: 14px;
-              padding: 8px 10px;
-          }
-      }
+         #menu {
+             width: 100%;
+             display: grid;
+             grid-template-columns: repeat(2, 1fr);
+             gap: 10px;
+             border-right: none;
+             border-bottom: 4px solid #ff00ff;
+         }
 
 
 
 
-      .gameScreen {
-          position: absolute;
-          display: none;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-      }
 
 
 
 
-      canvas {
-          background: black;
-          border: 4px solid white;
-          border-radius: 15px;
-          box-shadow: 0 0 20px white;
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
-      }
+         .gameBtn {
+             margin-bottom: 0;
+             font-size: 16px;
+             padding: 12px;
+         }
 
 
 
 
-      .flappy {
-          background: #ff0080;
-      }
 
 
 
 
-      .mine {
-          background: #00d4ff;
-      }
+         #gameArea {
+             min-height: 70vh;
+             padding: 10px;
+         }
 
 
 
 
-      .snake {
-          background: #00cc66;
-      }
 
 
 
 
-      .pong {
-          background: #ffcc00;
-          color: black;
-      }
+         .gameScreen {
+   position: absolute;
+   inset: 0;
 
 
+   display: none;
 
 
-      .breakout {
-          background: #ff6600;
-      }
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
 
 
+   width: 100%;
+   height: 100%;
 
 
-      .space {
-          background: #ff3333;
-      }
+   overflow: hidden;
+}
 
 
 
 
-      #minesweeper {
-          display: grid;
-          grid-template-columns: repeat(10, 40px);
-          gap: 4px;
-      }
 
 
 
 
-      .cell {
-          width: 40px;
-          height: 40px;
-          background: #222;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-radius: 6px;
-          cursor: pointer;
-          font-weight: bold;
-      }
+         .gameScreen canvas {
+             width: 100%;
+             max-width: 100%;
+             height: auto;
+             border-width: 2px;
+         }
 
 
 
 
-      .revealed {
-          background: #999;
-          color: black;
-      }
 
 
 
 
-      #gameOverMenu {
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.85);
-          display: none;
-          justify-content: center;
-          align-items: center;
-          z-index: 999;
-      }
+         /* REPLACE YOUR ENTIRE #minesweeper CSS WITH THIS */
 
 
+#minesweeper{
 
 
-      #gameOverBox {
-          background: #111;
-          border: 4px solid cyan;
-          border-radius: 20px;
-          padding: 40px;
-          text-align: center;
-          box-shadow: 0 0 30px cyan;
-      }
+   display:grid;
 
 
+   gap:4px;
 
 
-      #gameOverBox h1 {
-          font-size: 60px;
-          color: #ff004c;
-          margin-bottom: 20px;
-      }
+   width:min(92vw,92vh);
 
 
+   max-width:700px;
 
 
-      #gameOverBox h2 {
-          margin-bottom: 30px;
-      }
+   max-height:700px;
 
 
+   justify-content:center;
 
 
-      #gameOverBox button {
-          padding: 15px 40px;
-          font-size: 24px;
-          border: none;
-          border-radius: 10px;
-          background: cyan;
-          font-weight: bold;
-          cursor: pointer;
-      }
+   align-content:center;
 
 
+   margin:auto;
+}
 
 
-      .gameSwitchers {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 10px;
-          margin-bottom: 25px;
-      }
 
 
 
 
-      .gameSwitchers button {
-          padding: 10px 18px;
-          border: none;
-          border-radius: 10px;
-          font-weight: bold;
-          cursor: pointer;
-          background: #222;
-          color: white;
-          border: 2px solid cyan;
-      }
 
 
+         /* REPLACE YOUR ENTIRE .cell CSS WITH THIS */
 
 
-      .activeGameButton {
-          background: cyan !important;
-          color: black !important;
-          box-shadow: 0 0 15px cyan;
-      }
+.cell{
 
 
+   aspect-ratio:1/1;
 
 
-      .startOverlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.75);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          z-index: 5;
-      }
+   width:100%;
 
 
+   min-width:18px;
 
 
-      .startOverlay h1 {
-          font-size: 60px;
-          color: yellow;
-          text-shadow: 0 0 20px yellow;
-          margin-bottom: 20px;
-      }
+   min-height:18px;
 
 
+   background:#222;
 
 
-      .startOverlay button {
-          padding: 15px 40px;
-          font-size: 28px;
-          border: none;
-          border-radius: 12px;
-          background: cyan;
-          font-weight: bold;
-          cursor: pointer;
-      }
+   display:flex;
 
 
+   justify-content:center;
+   align-items:center;
 
 
-      #mine {
-          position: relative;
-          padding-top: 80px;
-      }
-      /* ADD THIS TO YOUR CSS */
+   border-radius:6px;
+
+
+   cursor:pointer;
+
+
+   font-weight:bold;
+
+
+   user-select:none;
+
+
+   transition:
+   background 0.15s,
+   transform 0.1s;
+}
+
+
+.cell:hover{
+
+
+   transform:scale(1.05);
+}
+
+
+
+
+
+
+
+
+         #gameOverBox {
+             width: 95%;
+             padding: 20px;
+         }
+
+
+
+
+
+
+
+
+         #gameOverBox h1 {
+             font-size: 42px;
+         }
+
+
+
+
+
+
+
+
+         #gameOverBox button {
+             font-size: 18px;
+             padding: 12px 20px;
+         }
+
+
+
+
+
+
+
+
+         .startOverlay h1 {
+             font-size: 42px;
+         }
+     }
+
+
+
+
+
+
+
+
+     @media (max-width:600px) {
+
+
+
+
+
+
+
+
+         header {
+             font-size: 28px;
+             text-align: center;
+             padding: 10px;
+         }
+
+
+
+
+
+
+
+
+         #menu {
+             grid-template-columns: 1fr;
+         }
+
+
+
+
+
+
+
+
+         .gameSwitchers {
+             gap: 6px;
+         }
+
+
+
+
+
+
+
+
+         .gameSwitchers button {
+             font-size: 14px;
+             padding: 8px 10px;
+         }
+     }
+
+
+
+
+
+
+
+
+     .gameScreen {
+         position: absolute;
+         display: none;
+         justify-content: center;
+         align-items: center;
+         flex-direction: column;
+     }
+
+
+
+
+
+
+
+
+     canvas {
+         background: black;
+         border: 4px solid white;
+         border-radius: 15px;
+         box-shadow: 0 0 20px white;
+         max-width: 100%;
+         max-height: 100%;
+         object-fit: contain;
+     }
+
+
+
+
+
+
+
+
+     .flappy {
+         background: #ff0080;
+     }
+
+
+
+
+
+
+
+
+     .mine {
+         background: #00d4ff;
+     }
+
+
+
+
+
+
+
+
+     .snake {
+         background: #00cc66;
+     }
+
+
+
+
+
+
+
+
+     .pong {
+         background: #ffcc00;
+         color: black;
+     }
+
+
+
+
+
+
+
+
+     .breakout {
+         background: #ff6600;
+     }
+
+
+
+
+
+
+
+
+     .space {
+         background: #ff3333;
+     }
+
+
+
+
+
+
+
+
+     #minesweeper {
+         display: grid;
+         grid-template-columns: repeat(10, 40px);
+         gap: 4px;
+     }
+
+
+
+
+
+
+
+
+     .cell {
+         width: 40px;
+         height: 40px;
+         background: #222;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         border-radius: 6px;
+         cursor: pointer;
+         font-weight: bold;
+     }
+
+
+
+
+
+
+
+
+     .revealed {
+         background: #999;
+         color: black;
+     }
+
+
+
+
+
+
+
+
+     #gameOverMenu {
+         position: fixed;
+         inset: 0;
+         background: rgba(0, 0, 0, 0.85);
+         display: none;
+         justify-content: center;
+         align-items: center;
+         z-index: 999;
+     }
+
+
+
+
+
+
+
+
+     #gameOverBox {
+         background: #111;
+         border: 4px solid cyan;
+         border-radius: 20px;
+         padding: 40px;
+         text-align: center;
+         box-shadow: 0 0 30px cyan;
+     }
+
+
+
+
+
+
+
+
+     #gameOverBox h1 {
+         font-size: 60px;
+         color: #ff004c;
+         margin-bottom: 20px;
+     }
+
+
+
+
+
+
+
+
+     #gameOverBox h2 {
+         margin-bottom: 30px;
+     }
+
+
+
+
+
+
+
+
+     #gameOverBox button {
+         padding: 15px 40px;
+         font-size: 24px;
+         border: none;
+         border-radius: 10px;
+         background: cyan;
+         font-weight: bold;
+         cursor: pointer;
+     }
+
+
+
+
+
+
+
+
+     .gameSwitchers {
+         display: flex;
+         flex-wrap: wrap;
+         justify-content: center;
+         gap: 10px;
+         margin-bottom: 25px;
+     }
+
+
+
+
+
+
+
+
+     .gameSwitchers button {
+         padding: 10px 18px;
+         border: none;
+         border-radius: 10px;
+         font-weight: bold;
+         cursor: pointer;
+         background: #222;
+         color: white;
+         border: 2px solid cyan;
+     }
+
+
+
+
+
+
+
+
+     .activeGameButton {
+         background: cyan !important;
+         color: black !important;
+         box-shadow: 0 0 15px cyan;
+     }
+
+
+
+
+
+
+
+
+     .startOverlay {
+         position: absolute;
+         inset: 0;
+         background: rgba(0, 0, 0, 0.75);
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-direction: column;
+         z-index: 5;
+     }
+
+
+
+
+
+
+
+
+     .startOverlay h1 {
+         font-size: 60px;
+         color: yellow;
+         text-shadow: 0 0 20px yellow;
+         margin-bottom: 20px;
+     }
+
+
+
+
+
+
+
+
+     .startOverlay button {
+         padding: 15px 40px;
+         font-size: 28px;
+         border: none;
+         border-radius: 12px;
+         background: cyan;
+         font-weight: bold;
+         cursor: pointer;
+     }
+
+
+
+
+
+
+
+
+     #mine {
+         position: relative;
+         padding-top: 80px;
+     }
+     /* ADD THIS EXTRA MOBILE FIX */
+
+
+#mine{
+
+
+   width:100%;
+   height:100%;
+
+
+   display:flex;
+   justify-content:center;
+   align-items:center;
+
+
+   overflow:auto;
+
+
+   padding:20px;
+}
+     /* ADD THIS TO YOUR CSS */
+/* =========================
+  MINESWEEPER MENU
+========================= */
+
+
+#mine {
+   width: 100%;
+   height: 100%;
+   justify-content: center;
+   align-items: center;
+   position: relative;
+   overflow: auto;
+   padding: 20px;
+}
+
+
+#mineMenu {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 20px;
+}
+
+
+#mineMenu h1 {
+   font-size: 60px;
+   color: #00ffff;
+   text-shadow: 0 0 20px cyan;
+}
+
+
+.mineButtons {
+   display: flex;
+   gap: 15px;
+   flex-wrap: wrap;
+   justify-content: center;
+}
+
+
+.mineButtons button {
+   padding: 15px 30px;
+   font-size: 22px;
+   border: none;
+   border-radius: 12px;
+   background: #00ccff;
+   color: black;
+   font-weight: bold;
+   cursor: pointer;
+   transition: 0.2s;
+}
+
+
+.mineButtons button:hover {
+   transform: scale(1.05);
+}
+
+
+#mineGame {
+   display: none;
+   flex-direction: row;
+   justify-content: center;
+   align-items: flex-start;
+   gap: 20px;
+   width: 100%;
+   max-width: 100%;
+   padding: 20px;
+}
+
+
+/* MOBILE */
+@media (max-width:900px){
+
+
+   #mineGame{
+       flex-direction: column;
+       align-items: center;
+   }
+}
+
+
+#mineHud {
+   min-width: 220px;
+   font-size: clamp(14px,1.3vw,22px);
+   text-align: left;
+   background: rgba(0,0,0,0.55);
+   padding: 16px;
+   border-radius: 14px;
+   border: 2px solid cyan;
+   box-shadow: 0 0 18px cyan;
+   line-height: 1.8;
+   align-self: flex-start;
+   position: sticky;
+   top: 10px;
+}
+
+
+#minesweeper {
+   display: grid;
+   gap: 4px;
+   justify-content: center;
+   width: fit-content;
+   max-width: 95vw;
+}
+
+
+.cell {
+   aspect-ratio: 1/1;
+   width: min(42px, 7vw);
+   min-width: 22px;
+   max-width: 42px;
+   border-radius: 6px;
+   font-weight: bold;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+
 
 
 
 
 #pong {
-  position: relative;
+ position: relative;
 }
+
+
+
+
 
 
 
 
 #pongPauseBtn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 20;
+ position: absolute;
+ top: 15px;
+ right: 15px;
+ z-index: 20;
 
 
 
 
-  padding: 10px 18px;
 
 
 
 
-  border: none;
-  border-radius: 10px;
+ padding: 10px 18px;
 
 
 
 
-  background: cyan;
-  color: black;
 
 
 
 
-  font-weight: bold;
-  cursor: pointer;
+ border: none;
+ border-radius: 10px;
 
 
 
 
-  box-shadow: 0 0 15px cyan;
 
 
 
 
-  transition: 0.2s;
+ background: cyan;
+ color: black;
+
+
+
+
+
+
+
+
+ font-weight: bold;
+ cursor: pointer;
+
+
+
+
+
+
+
+
+ box-shadow: 0 0 15px cyan;
+
+
+
+
+
+
+
+
+ transition: 0.2s;
 }
 
 
 
 
+
+
+
+
 #pongPauseBtn:hover {
-  transform: scale(1.05);
+ transform: scale(1.05);
 }
 /* ADD THIS TO YOUR CSS */
 
 
 
 
+
+
+
+
 .pongMenuBox{
-  position:absolute;
-  inset:0;
+ position:absolute;
+ inset:0;
 
 
 
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
 
 
 
 
-  background:
-  radial-gradient(circle at top,
-  rgba(0,255,255,0.15),
-  rgba(0,0,0,0.95));
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ flex-direction:column;
 
 
 
 
-  z-index:15;
+
+
+
+
+ background:
+ radial-gradient(circle at top,
+ rgba(0,255,255,0.15),
+ rgba(0,0,0,0.95));
+
+
+
+
+
+
+
+
+ z-index:15;
 }
+
+
+
+
 
 
 
 
 .pongMenuTitle{
-  font-size:72px;
-  font-weight:bold;
+ font-size:72px;
+ font-weight:bold;
 
 
 
 
-  margin-bottom:40px;
 
 
 
 
-  color:white;
+ margin-bottom:40px;
 
 
 
 
-  text-shadow:
-  0 0 10px cyan,
-  0 0 20px cyan,
-  0 0 40px cyan;
+
+
+
+
+ color:white;
+
+
+
+
+
+
+
+
+ text-shadow:
+ 0 0 10px cyan,
+ 0 0 20px cyan,
+ 0 0 40px cyan;
 }
+
+
+
+
 
 
 
 
 .pongModeButtons{
-  display:flex;
-  gap:25px;
-  flex-wrap:wrap;
-  justify-content:center;
+ display:flex;
+ gap:25px;
+ flex-wrap:wrap;
+ justify-content:center;
 }
+
+
+
+
 
 
 
 
 .pongModeBtn{
-  width:240px;
+ width:240px;
 
 
 
 
-  padding:22px;
 
 
 
 
-  border:none;
-  border-radius:18px;
+ padding:22px;
 
 
 
 
-  cursor:pointer;
 
 
 
 
-  font-size:26px;
-  font-weight:bold;
+ border:none;
+ border-radius:18px;
 
 
 
 
-  color:white;
 
 
 
 
-  transition:0.25s;
+ cursor:pointer;
 
 
 
 
-  position:relative;
 
 
 
 
-  overflow:hidden;
+ font-size:26px;
+ font-weight:bold;
+
+
+
+
+
+
+
+
+ color:white;
+
+
+
+
+
+
+
+
+ transition:0.25s;
+
+
+
+
+
+
+
+
+ position:relative;
+
+
+
+
+
+
+
+
+ overflow:hidden;
 }
+
+
+
+
 
 
 
 
 .pongModeBtn:hover{
-  transform:translateY(-6px) scale(1.04);
+ transform:translateY(-6px) scale(1.04);
 }
+
+
+
+
 
 
 
 
 .pongModeBtn::before{
-  content:"";
+ content:"";
 
 
 
 
-  position:absolute;
-  inset:0;
 
 
 
 
-  background:
-  linear-gradient(
-  135deg,
-  rgba(255,255,255,0.22),
-  transparent);
+ position:absolute;
+ inset:0;
 
 
 
 
-  pointer-events:none;
+
+
+
+
+ background:
+ linear-gradient(
+ 135deg,
+ rgba(255,255,255,0.22),
+ transparent);
+
+
+
+
+
+
+
+
+ pointer-events:none;
 }
+
+
+
+
 
 
 
 
 .aiMode{
-  background:
-  linear-gradient(
-  135deg,
-  #00d4ff,
-  #0044ff);
+ background:
+ linear-gradient(
+ 135deg,
+ #00d4ff,
+ #0044ff);
 
 
 
 
-  box-shadow:
-  0 0 20px #00d4ff;
+
+
+
+
+ box-shadow:
+ 0 0 20px #00d4ff;
 }
+
+
+
+
 
 
 
 
 .twoMode{
-  background:
-  linear-gradient(
-  135deg,
-  #ff00cc,
-  #ff6600);
+ background:
+ linear-gradient(
+ 135deg,
+ #ff00cc,
+ #ff6600);
 
 
 
 
-  box-shadow:
-  0 0 20px #ff00cc;
+
+
+
+
+ box-shadow:
+ 0 0 20px #ff00cc;
 }
+
+
+
+
 
 
 
 
 .pongModeBtn small{
-  display:block;
+ display:block;
 
 
 
 
-  margin-top:10px;
 
 
 
 
-  font-size:15px;
+ margin-top:10px;
 
 
 
 
-  opacity:0.9;
 
 
 
 
-  font-weight:normal;
+ font-size:15px;
+
+
+
+
+
+
+
+
+ opacity:0.9;
+
+
+
+
+
+
+
+
+ font-weight:normal;
 }
+
+
+
+
 
 
 
@@ -795,25 +1400,75 @@
 
 
 
-  .pongMenuTitle{
-      font-size:48px;
-  }
 
 
 
 
-  .pongModeBtn{
-      width:90vw;
-      max-width:320px;
+ .pongMenuTitle{
+     font-size:48px;
+ }
 
 
 
 
-      font-size:22px;
-  }
+
+
+
+
+ .pongModeBtn{
+     width:90vw;
+     max-width:320px;
+
+
+
+
+
+
+
+
+     font-size:22px;
+ }
 }
-  </style>
+
+
+/* OPTIONAL BETTER SMALL PHONE SUPPORT */
+
+
+@media(max-width:600px){
+
+
+   #minesweeper{
+
+
+       gap:2px;
+   }
+
+
+   .cell{
+
+
+       border-radius:4px;
+   }
+}
+.crossy{
+    background:#44ff44;
+    color:black;
+}
+.crossy {
+    background: #44cc44;
+}
+
+#crossy canvas {
+    width: min(92vw, 700px);
+    height: auto;
+    max-height: 85vh;
+}
+ </style>
 </head>
+
+
+
+
 
 
 
@@ -823,59 +1478,152 @@
 
 
 
-  <header>RETRO ARCADE HUB</header>
 
 
 
 
-  <div id="container">
+ <header>RETRO ARCADE HUB</header>
 
 
 
 
-      <div id="menu">
-          <button class="gameBtn flappy" onclick="showGame('flappy')">Flappy Bird</button>
-          <button class="gameBtn mine" onclick="showGame('mine')">Minesweeper</button>
-          <button class="gameBtn snake" onclick="showGame('snake')">Snake</button>
-          <button class="gameBtn pong" onclick="showGame('pong')">Pong</button>
-          <button class="gameBtn breakout" onclick="showGame('breakout')">Breakout</button>
-          <button class="gameBtn space" onclick="showGame('space')">Space Shooter</button>
-      </div>
 
 
 
 
-      <div id="gameArea">
+ <div id="container">
 
 
 
 
-          <div id="flappy" class="gameScreen" style="display:flex;">
-              <div class="startOverlay" id="flappyStart">
-                  <h1>FLAPPY BIRD</h1>
-                  <button onclick="startFlappy()">START</button>
-              </div>
-              <canvas id="flappyCanvas" width="900" height="600"></canvas>
-          </div>
 
 
 
 
-          <div id="mine" class="gameScreen">
-              <div id="minesweeper"></div>
-          </div>
+     <div id="menu">
+         <button class="gameBtn flappy" onclick="showGame('flappy')">Flappy Bird</button>
+         <button class="gameBtn mine" onclick="showGame('mine')">Minesweeper</button>
+         <button class="gameBtn snake" onclick="showGame('snake')">Snake</button>
+         <button class="gameBtn pong" onclick="showGame('pong')">Pong</button>
+         <button class="gameBtn breakout" onclick="showGame('breakout')">Breakout</button>
+         <button class="gameBtn space" onclick="showGame('space')">Space Shooter</button>
+<button class="gameBtn" style="background:#44cc44;"
+onclick="showGame('crossy')">
+    Crossy Road
+</button>
+     </div>
 
 
 
 
-          <div id="snake" class="gameScreen">
-              <canvas id="snakeCanvas" width="500" height="500"></canvas>
-          </div>
 
 
 
 
-          <!-- REPLACE YOUR ENTIRE PONG SECTION WITH THIS -->
+     <div id="gameArea">
+
+
+
+
+
+
+
+
+         <div id="flappy" class="gameScreen" style="display:flex;">
+             <div class="startOverlay" id="flappyStart">
+                 <h1>FLAPPY BIRD</h1>
+                 <button onclick="startFlappy()">START</button>
+             </div>
+             <canvas id="flappyCanvas" width="900" height="600"></canvas>
+         </div>
+
+         <div id="crossy" class="gameScreen">
+    <canvas id="crossyCanvas" width="700" height="700"></canvas>
+</div>
+
+
+
+
+
+         <!-- REPLACE YOUR CURRENT MINESWEEPER HTML WITH THIS -->
+
+
+<div id="mine" class="gameScreen" style="display:none;">
+
+
+   <div id="mineMenu">
+
+
+       <h1>MINESWEEPER</h1>
+
+
+       <div class="mineButtons">
+
+
+           <button onclick="startMinesweeper(8,10)">
+               EASY
+           </button>
+
+
+           <button onclick="startMinesweeper(10,15)">
+               MEDIUM
+           </button>
+
+
+           <button onclick="startMinesweeper(14,35)">
+               HARD
+           </button>
+
+
+       </div>
+
+
+       <p>
+           H = Hint |
+           + / - = Resize
+       </p>
+
+
+   </div>
+
+
+   <div id="mineGame">
+
+
+       <div id="mineHud"></div>
+
+
+       <div id="minesweeper"></div>
+
+
+   </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+         <div id="snake" class="gameScreen">
+             <canvas id="snakeCanvas" width="500" height="500"></canvas>
+         </div>
+
+
+
+
+
+
+
+
+         <!-- REPLACE YOUR ENTIRE PONG SECTION WITH THIS -->
+
+
+
+
 
 
 
@@ -885,90 +1633,146 @@
 
 
 
+
+
+
+
 <div id="pong" class="gameScreen">
 
 
 
 
-  <button id="pongPauseBtn" onclick="backToPongMenu()">
-      CHANGE MODE
-  </button>
 
 
 
 
-  <div id="pongMenu" class="pongMenuBox">
+ <button id="pongPauseBtn" onclick="backToPongMenu()">
+     CHANGE MODE
+ </button>
 
 
 
 
-      <div class="pongMenuTitle">
-          PONG
-      </div>
 
 
 
 
-      <div class="pongModeButtons">
+ <div id="pongMenu" class="pongMenuBox">
 
 
 
 
-          <button
-          class="pongModeBtn aiMode"
-          onclick="setPongMode('ai')">
 
 
 
 
-              VS AI
+     <div class="pongMenuTitle">
+         PONG
+     </div>
 
 
 
 
-              <small>
-                  Play against computer
-              </small>
-          </button>
 
 
 
 
-          <button
-          class="pongModeBtn twoMode"
-          onclick="setPongMode('two')">
+     <div class="pongModeButtons">
 
 
 
 
-              TWO PLAYER
 
 
 
 
-              <small>
-                  W/S vs ↑/↓
-              </small>
-          </button>
+         <button
+         class="pongModeBtn aiMode"
+         onclick="setPongMode('ai')">
 
 
 
 
-      </div>
-  </div>
 
 
 
 
-  <canvas id="pongCanvas" width="700" height="500"></canvas>
+             VS AI
+
+
+
+
+
+
+
+
+             <small>
+                 Play against computer
+             </small>
+         </button>
+
+
+
+
+
+
+
+
+         <button
+         class="pongModeBtn twoMode"
+         onclick="setPongMode('two')">
+
+
+
+
+
+
+
+
+             TWO PLAYER
+
+
+
+
+
+
+
+
+             <small>
+                 W/S vs ↑/↓
+             </small>
+         </button>
+
+
+
+
+
+
+
+
+     </div>
+ </div>
+
+
+
+
+
+
+
+
+ <canvas id="pongCanvas" width="700" height="500"></canvas>
 </div>
 
 
 
 
-          <div id="breakout" class="gameScreen">
-              <canvas id="breakCanvas" width="700" height="500"></canvas>
-          </div>
+
+
+
+
+         <div id="breakout" class="gameScreen">
+             <canvas id="breakCanvas" width="700" height="500"></canvas>
+         </div>
 
 
 
@@ -981,64 +1785,110 @@
 
 
 
-          <div id="space" class="gameScreen">
-              <canvas id="spaceCanvas" width="700" height="600"></canvas>
-          </div>
 
 
 
 
-      </div>
-  </div>
 
 
 
 
-  <div id="gameOverMenu">
-      <div id="gameOverBox">
-          <h1>GAME OVER</h1>
-          <h2 id="finalScore">Score: 0</h2>
 
 
 
 
-          <!-- REPLACE YOUR ENTIRE .gameSwitchers SECTION WITH THIS -->
+         <div id="space" class="gameScreen">
+             <canvas id="spaceCanvas" width="700" height="600"></canvas>
+         </div>
+
+
+         <div id="crossy" class="gameScreen">
+    <canvas id="crossyCanvas" width="700" height="600"></canvas>
+</div>
+
+
+
+
+
+     </div>
+ </div>
+
+
+
+
+
+
+
+
+ <div id="gameOverMenu">
+     <div id="gameOverBox">
+         <h1>GAME OVER</h1>
+         <h2 id="finalScore">Score: 0</h2>
+
+
+
+
+
+
+
+
+         <!-- REPLACE YOUR ENTIRE .gameSwitchers SECTION WITH THIS -->
+
+
 
 
 <div class="gameSwitchers">
 
 
-   <!-- REPLACE ONLY THE BUTTON SECTION INSIDE .gameSwitchers WITH THIS -->
+
+
+  <!-- REPLACE ONLY THE BUTTON SECTION INSIDE .gameSwitchers WITH THIS -->
+
+
 
 
 <button onclick="showGame('flappy')">
-   Flappy
+  Flappy
 </button>
+
+
 
 
 <button onclick="showGame('mine')">
-   Minesweeper
+  Minesweeper
 </button>
+
+
 
 
 <button onclick="showGame('snake')">
-   Snake
+  Snake
 </button>
+
+
 
 
 <button onclick="showGame('pong')">
-   Pong
+  Pong
 </button>
+
+
 
 
 <button onclick="showGame('breakout')">
-   Breakout
+  Breakout
 </button>
+
+
 
 
 <button onclick="showGame('space')">
-   Space
+  Space
 </button>
+
+<button onclick="showGame('crossy')">Crossy</button>
+
+
 
 
 
@@ -1048,41 +1898,70 @@
 
 
 
-          <button onclick="restartCurrentGame()">RESTART</button>
-      </div>
-  </div>
 
 
 
 
-  <script>
-      let currentGame = 'flappy';
-      let gamePaused = false;
-      let flappyStarted = false;
+         <button onclick="restartCurrentGame()">RESTART</button>
+     </div>
+ </div>
 
 
 
 
-      function showGame(id) {
-          currentGame = id;
 
 
 
 
-          document.querySelectorAll('.gameScreen').forEach(game => {
-              game.style.display = 'none';
-          });
+ <script>
+     let currentGame = 'flappy';
+     let gamePaused = false;
+     let flappyStarted = false;
 
 
 
 
-          document.getElementById(id).style.display = 'flex';
 
 
 
 
-          hideGameOver();
-      }
+     function showGame(id) {
+
+
+   currentGame = id;
+
+
+   // FULLY HIDE ALL GAMES
+   document.querySelectorAll('.gameScreen')
+   .forEach(game => {
+
+
+       game.style.display = 'none';
+   });
+
+
+   // SHOW CURRENT GAME
+   const selected =
+   document.getElementById(id);
+
+
+   selected.style.display = 'flex';
+
+
+   // FIX MINESWEEPER LAYOUT
+   if(id === 'mine'){
+
+
+       selected.style.alignItems = 'center';
+   }
+
+
+   hideGameOver();
+}
+
+
+
+
 
 
 
@@ -1090,69 +1969,95 @@
 /* REPLACE YOUR ENTIRE showGameOver() FUNCTION WITH THIS */
 
 
+
+
 function showGameOver(score) {
 
 
-   gamePaused = true;
 
 
-   document.getElementById(
-       'gameOverMenu'
-   ).style.display = 'flex';
+  gamePaused = true;
 
 
-   document.getElementById(
-       'finalScore'
-   ).innerHTML = 'Score: ' + score;
 
 
-   document
-   .querySelectorAll('.gameSwitchers button')
-   .forEach(btn => {
+  document.getElementById(
+      'gameOverMenu'
+  ).style.display = 'flex';
 
 
-       btn.classList.remove(
-           'activeGameButton'
-       );
-   });
 
 
-   const map = {
+  document.getElementById(
+      'finalScore'
+  ).innerHTML = 'Score: ' + score;
 
 
-       flappy: 0,
-       mine: 1,
-       snake: 2,
-       pong: 3,
-       breakout: 4,
-       space: 5
-   };
 
 
-   const buttons =
-   document.querySelectorAll(
-       '.gameSwitchers button'
-   );
+  document
+  .querySelectorAll('.gameSwitchers button')
+  .forEach(btn => {
 
 
-   if(buttons[map[currentGame]]){
 
 
-       buttons[
-           map[currentGame]
-       ].classList.add(
-           'activeGameButton'
-       );
-   }
+      btn.classList.remove(
+          'activeGameButton'
+      );
+  });
+
+
+
+
+const map = {
+    flappy: 0,
+    snake: 1,
+    pong: 2,
+    breakout: 3,
+    space: 4,
+    crossy: 5
+};
+
+
+
+
+  const buttons =
+  document.querySelectorAll(
+      '.gameSwitchers button'
+  );
+
+
+
+
+  if(buttons[map[currentGame]]){
+
+
+
+
+      buttons[
+          map[currentGame]
+      ].classList.add(
+          'activeGameButton'
+      );
+  }
 }
 
 
 
 
-      function hideGameOver() {
-          gamePaused = false;
-          document.getElementById('gameOverMenu').style.display = 'none';
-      }
+
+
+
+
+     function hideGameOver() {
+         gamePaused = false;
+         document.getElementById('gameOverMenu').style.display = 'none';
+     }
+
+
+
+
 
 
 
@@ -1160,1489 +2065,1227 @@ function showGameOver(score) {
 /* REPLACE YOUR ENTIRE restartCurrentGame() FUNCTION WITH THIS */
 
 
+
+
 function restartCurrentGame(){
 
 
-   hideGameOver();
 
 
-   if(currentGame === 'flappy'){
+  hideGameOver();
 
 
-       resetFlappy();
-   }
 
 
-   else if(currentGame === 'mine'){
+  if(currentGame === 'flappy'){
 
 
-       buildMines();
-   }
 
 
-   else if(currentGame === 'snake'){
+      resetFlappy();
+  }
 
 
-       resetSnake();
-   }
 
 
-   else if(currentGame === 'pong'){
-
-
-       resetPong();
-   }
-
-
-   else if(currentGame === 'breakout'){
-
-
-       resetBreakout();
-   }
-
-
-   else if(currentGame === 'space'){
-
-
-       resetSpace();
-   }
-}
-
-
-
-
-      function startFlappy() {
-          flappyStarted = true;
-          document.getElementById('flappyStart').style.display = 'none';
-      }
-
-
-
-
-      /* FLAPPY */
-      const fCanvas = document.getElementById('flappyCanvas');
-      const fctx = fCanvas.getContext('2d');
-
-
-
-
-      let birdY = 250;
-      let velocity = 0;
-      let gravity = 0.5;
-      let pipes = [];
-      let flappyScore = 0;
-
-
-
-
-      document.addEventListener('keydown', e => {
-          if (currentGame !== 'flappy') return;
-          if (e.code === 'Space') velocity = -8;
-      });
-
-
-
-
-      function resetFlappy() {
-          birdY = 250;
-          velocity = 0;
-          pipes = [];
-          flappyScore = 0;
-      }
-
-
-
-
-      function addPipe() {
-          if (currentGame !== 'flappy') return;
-
-
-
-
-          let top = Math.random() * 250 + 50;
-
-
-
-
-          pipes.push({
-              x: 900,
-              top: top,
-              bottom: top + 170,
-              scored: false
-          });
-      }
-
-
-
-
-      setInterval(addPipe, 2000);
-
-
-
-
-      function flappyLoop() {
-          requestAnimationFrame(flappyLoop);
-
-
-
-
-          if (currentGame !== 'flappy') return;
-          if (gamePaused) return;
-          if (!flappyStarted) return;
-
-
-
-
-          fctx.clearRect(0, 0, 900, 600);
-
-
-
-
-          for (let i = 0; i < 40; i++) {
-              fctx.fillStyle = 'white';
-              fctx.fillRect((i * 140 + Date.now() / 15) % 900, (i * 47) % 600, 2, 2);
-          }
-
-
-
-
-          velocity += gravity;
-          birdY += velocity;
-
-
-
-
-          fctx.shadowBlur = 8;
-          fctx.shadowColor = 'yellow';
-          fctx.fillStyle = 'yellow';
-          fctx.beginPath();
-          fctx.arc(100, birdY, 20, 0, Math.PI * 2);
-          fctx.fill();
-
-
-
-
-          fctx.fillStyle = '#00ff88';
-          fctx.shadowColor = '#00ff88';
-
-
-
-
-          pipes.forEach(pipe => {
-              pipe.x -= 3;
-
-
-
-
-              fctx.fillRect(pipe.x, 0, 60, pipe.top);
-              fctx.fillRect(pipe.x, pipe.bottom, 60, 600);
-
-
-
-
-              if (!pipe.scored && pipe.x < 100) {
-                  flappyScore++;
-                  pipe.scored = true;
-              }
-
-
-
-
-              if (120 > pipe.x && 80 < pipe.x + 60 && (birdY - 20 < pipe.top || birdY + 20 > pipe.bottom)) {
-                  showGameOver(flappyScore);
-                  resetFlappy();
-              }
-          });
-
-
-
-
-          if (birdY < 0 || birdY > 600) {
-              showGameOver(flappyScore);
-              resetFlappy();
-          }
-
-
-
-
-          fctx.shadowBlur = 0;
-          fctx.fillStyle = 'white';
-          fctx.font = '30px Arial';
-          fctx.fillText('Score: ' + flappyScore, 20, 40);
-
-
-
-
-          // ground glow
-          fctx.fillStyle = '#222';
-          fctx.fillRect(0, 580, 900, 20);
-      }
-
-
-
-
-      flappyLoop();
-
-
-
-
-      /* MINESWEEPER */
-      /* ===================================================
-      /* ===================================================
-      MINESWEEPER DELUXE
-      =================================================== */
-
-
-
-
-      const mineBoard = document.getElementById('minesweeper');
-
-
-
-
-      let mineSize = 10;
-      let mineCount = 15;
-
-
-
-
-      let customBoardSize = 10;
-
-
-
-
-      let mineGrid = [];
-
-
-
-
-      let mineGameOver = false;
-
-
-
-
-      let firstMineClick = true;
-
-
-
-
-      let mineFlags = 0;
-
-
-
-
-      let mineTimer = 0;
-
-
-
-
-      let mineInterval = null;
-
-
-
-
-      let mineHints = 3;
-
-
-
-
-      /* =========================
-         TIMER
-      ========================= */
-
-
-
-
-      function startMineTimer() {
-
-
-
-
-          clearInterval(mineInterval);
-
-
-
-
-          mineInterval = setInterval(() => {
-
-
-
-
-              if (currentGame === 'mine' && !mineGameOver) {
-
-
-
-
-                  mineTimer++;
-
-
-
-
-                  renderMineBoard();
-              }
-
-
-
-
-          }, 1000);
-      }
-
-
-
-
-      /* =========================
-         BUILD BOARD
-      ========================= */
-
-
-
-
-      function buildMines() {
-
-
-
-
-          mineBoard.innerHTML = '';
-
-
-
-
-          mineBoard.style.gridTemplateColumns =
-              `repeat(${mineSize},1fr)`;
-
-
-
-
-          mineGrid = [];
-
-
-
-
-          mineGameOver = false;
-
-
-
-
-          firstMineClick = true;
-
-
-
-
-          mineFlags = 0;
-
-
-
-
-          mineTimer = 0;
-
-
-
-
-          mineHints = 3;
-
-
-
-
-          startMineTimer();
-
-
-
-
-          for (let y = 0; y < mineSize; y++) {
-
-
-
-
-              let row = [];
-
-
-
-
-              for (let x = 0; x < mineSize; x++) {
-
-
-
-
-                  row.push({
-
-
-
-
-                      mine: false,
-
-
-
-
-                      revealed: false,
-
-
-
-
-                      flagged: false,
-
-
-
-
-                      number: 0,
-
-
-
-
-                      x,
-                      y
-                  });
-              }
-
-
-
-
-              mineGrid.push(row);
-          }
-
-
-
-
-          renderMineBoard();
-      }
-
-
-
-
-      /* =========================
-         PLACE MINES
-      ========================= */
-
-
-
-
-      function placeMines(safeX, safeY) {
-
-
-
-
-          let placed = 0;
-
-
-
-
-          while (placed < mineCount) {
-
-
-
-
-              const rx =
-                  Math.floor(Math.random() * mineSize);
-
-
-
-
-              const ry =
-                  Math.floor(Math.random() * mineSize);
-
-
-
-
-              if (mineGrid[ry][rx].mine) continue;
-
-
-
-
-              // first click safe zone
-              if (
-                  Math.abs(rx - safeX) <= 1 &&
-                  Math.abs(ry - safeY) <= 1
-              ) continue;
-
-
-
-
-              mineGrid[ry][rx].mine = true;
-
-
-
-
-              placed++;
-          }
-
-
-
-
-          // generate numbers
-          for (let y = 0; y < mineSize; y++) {
-
-
-
-
-              for (let x = 0; x < mineSize; x++) {
-
-
-
-
-                  let count = 0;
-
-
-
-
-                  for (let dy = -1; dy <= 1; dy++) {
-
-
-
-
-                      for (let dx = -1; dx <= 1; dx++) {
-
-
-
-
-                          const nx = x + dx;
-                          const ny = y + dy;
-
-
-
-
-                          if (
-                              nx >= 0 &&
-                              ny >= 0 &&
-                              nx < mineSize &&
-                              ny < mineSize
-                          ) {
-
-
-
-
-                              if (mineGrid[ny][nx].mine) {
-
-
-
-
-                                  count++;
-                              }
-                          }
-                      }
-                  }
-
-
-
-
-                  mineGrid[y][x].number = count;
-              }
-          }
-      }
-
-
-
-
-      /* =========================
-         REVEAL TILE
-      ========================= */
-
-
-
-
-      function revealMine(x, y) {
-
-
-
-
-          const cell = mineGrid[y][x];
-
-
-
-
-          if (
-              cell.revealed ||
-              cell.flagged ||
-              mineGameOver
-          ) return;
-
-
-
-
-          if (firstMineClick) {
-
-
-
-
-              placeMines(x, y);
-
-
-
-
-              firstMineClick = false;
-          }
-
-
-
-
-          cell.revealed = true;
-
-
-
-
-          // hit mine
-          if (cell.mine) {
-
-
-
-
-              mineGameOver = true;
-
-
-
-
-              revealAllMines();
-
-
-
-
-              setTimeout(() => {
-
-
-
-
-                  showGameOver(mineFlags);
-
-
-
-
-              }, 500);
-
-
-
-
-              return;
-          }
-
-
-
-
-          // recursive reveal
-          if (cell.number === 0) {
-
-
-
-
-              for (let dy = -1; dy <= 1; dy++) {
-
-
-
-
-                  for (let dx = -1; dx <= 1; dx++) {
-
-
-
-
-                      const nx = x + dx;
-                      const ny = y + dy;
-
-
-
-
-                      if (
-                          nx >= 0 &&
-                          ny >= 0 &&
-                          nx < mineSize &&
-                          ny < mineSize
-                      ) {
-
-
-
-
-                          revealMine(nx, ny);
-                      }
-                  }
-              }
-          }
-
-
-
-
-          renderMineBoard();
-
-
-
-
-          checkMineWin();
-      }
-
-
-
-
-      /* =========================
-         FLAGS
-      ========================= */
-
-
-
-
-      function toggleFlag(x, y) {
-
-
-
-
-          const cell = mineGrid[y][x];
-
-
-
-
-          if (cell.revealed || mineGameOver) return;
-
-
-
-
-          cell.flagged = !cell.flagged;
-
-
-
-
-          mineFlags += cell.flagged ? 1 : -1;
-
-
-
-
-          renderMineBoard();
-      }
-
-
-
-
-      /* =========================
-         REVEAL ALL
-      ========================= */
-
-
-
-
-      function revealAllMines() {
-
-
-
-
-          mineGrid.forEach(row => {
-
-
-
-
-              row.forEach(cell => {
-
-
-
-
-                  if (cell.mine) {
-
-
-
-
-                      cell.revealed = true;
-                  }
-              });
-          });
-
-
-
-
-          renderMineBoard();
-      }
-
-
-
-
-      /* =========================
-         WIN CHECK
-      ========================= */
-
-
-
-
-      function checkMineWin() {
-
-
-
-
-          let safe = 0;
-          let revealed = 0;
-
-
-
-
-          mineGrid.forEach(row => {
-
-
-
-
-              row.forEach(cell => {
-
-
-
-
-                  if (!cell.mine) {
-
-
-
-
-                      safe++;
-                  }
-
-
-
-
-                  if (
-                      cell.revealed &&
-                      !cell.mine
-                  ) {
-
-
-
-
-                      revealed++;
-                  }
-              });
-          });
-
-
-
-
-          if (safe === revealed) {
-
-
-
-
-              mineGameOver = true;
-
-
-
-
-              setTimeout(() => {
-
-
-
-
-                  alert("YOU WIN!");
-
-
-
-
-              }, 200);
-          }
-      }
-
-
-
-
-      /* =========================
-         HINT SYSTEM
-      ========================= */
-
-
-
-
-      function mineHint() {
-
-
-
-
-          if (mineHints <= 0) return;
-
-
-
-
-          let cells = [];
-
-
-
-
-          mineGrid.forEach(row => {
-
-
-
-
-              row.forEach(cell => {
-
-
-
-
-                  if (
-                      !cell.mine &&
-                      !cell.revealed
-                  ) {
-
-
-
-
-                      cells.push(cell);
-                  }
-              });
-          });
-
-
-
-
-          if (cells.length) {
-
-
-
-
-              const random =
-                  cells[
-                  Math.floor(
-                      Math.random() * cells.length
-                  )
-                  ];
-
-
-
-
-              revealMine(random.x, random.y);
-
-
-
-
-              mineHints--;
-          }
-      }
-
-
-
-
-      /* =========================
-         RENDER
-      ========================= */
-
-
-
-
-      function renderMineBoard() {
-
-
-
-
-          mineBoard.innerHTML = '';
-
-
-
-
-          mineGrid.forEach(row => {
-
-
-
-
-              row.forEach(cell => {
-
-
-
-
-                  const div =
-                      document.createElement('div');
-
-
-
-
-                  div.className = 'cell';
-
-
-
-
-                  // responsive tile sizing
-                  const tileSize =
-                      Math.max(
-                          22,
-                          420 / mineSize
-                      );
-
-
-
-
-                  div.style.width =
-                      tileSize + 'px';
-
-
-
-
-                  div.style.height =
-                      tileSize + 'px';
-
-
-
-
-                  div.style.fontSize =
-                      (tileSize * 0.45) + 'px';
-
-
-
-
-                  // revealed
-                  if (cell.revealed) {
-
-
-
-
-                      div.classList.add('revealed');
-
-
-
-
-                      div.style.animation =
-                          'popIn 0.15s';
-
-
-
-
-                      if (cell.mine) {
-
-
-
-
-                          div.innerHTML = '💣';
-
-
-
-
-                          div.style.background = '#ff0033';
-
-
-
-
-                          div.style.boxShadow =
-                              '0 0 15px red';
-                      }
-
-
-
-
-                      else if (cell.number > 0) {
-
-
-
-
-                          div.textContent =
-                              cell.number;
-
-
-
-
-                          div.style.color =
-                              `hsl(${cell.number * 40},100%,60%)`;
-                      }
-                  }
-
-
-
-
-                  // flag
-                  if (cell.flagged) {
-
-
-
-
-                      div.innerHTML = '🚩';
-                  }
-
-
-
-
-                  // click
-                  div.onclick = () => {
-
-
-
-
-                      revealMine(cell.x, cell.y);
-                  };
-
-
-
-
-                  // right click
-                  div.oncontextmenu = (e) => {
-
-
-
-
-                      e.preventDefault();
-
-
-
-
-                      toggleFlag(cell.x, cell.y);
-                  };
-
-
-
-
-                  mineBoard.appendChild(div);
-              });
-          });
-
-
-
-
-          let hud =
-              document.getElementById('mineHud');
-
-
-
-
-          if (!hud) {
-
-
-
-
-              hud =
-                  document.createElement('div');
-
-
-
-
-              hud.id = 'mineHud';
-
-
-
-
-              hud.style.position = 'absolute';
-
-
-
-
-              hud.style.top = '-65px';
-
-
-
-
-              hud.style.left = '50%';
-
-
-
-
-              hud.style.transform = 'translateX(-50%)';
-
-
-
-
-              hud.style.zIndex = '10';
-
-
-
-
-              hud.style.fontSize = '20px';
-
-
-
-
-              hud.style.color = '#ffffff';
-
-
-
-
-              hud.style.fontWeight = 'bold';
-
-
-
-
-              hud.style.textShadow =
-                  `
-  0 0 5px #fff,
-  0 0 10px #00ffff,
-  0 0 20px #00ffff
-  `;
-
-
-
-
-              hud.style.background = 'rgba(0,0,0,0.45)';
-
-
-
-
-              hud.style.padding = '10px 18px';
-
-
-
-
-              hud.style.borderRadius = '14px';
-
-
-
-
-              hud.style.border = '2px solid #00ffff';
-
-
-
-
-              hud.style.boxShadow =
-                  '0 0 20px rgba(0,255,255,0.7)';
-
-
-
-
-              document
-                  .getElementById('mine')
-                  .appendChild(hud);
-          }
-
-
-
-
-          hud.innerHTML =
-              `
-  ⏱ ${mineTimer}s
-  |
-  🚩 ${mineFlags}/${mineCount}
-  |
-  💡 ${mineHints}
-  |
-  📏 ${mineSize}x${mineSize}
-  |
-  (+ / -) Resize
-  `;
-      }
-
-
-
-
-      /* =========================
-         CONTROLS
-      ========================= */
-
-
-
-
-      window.addEventListener('keydown', e => {
-
-
-
-
-          if (currentGame !== 'mine') return;
-
-
-
-
-          // hint
-          if (e.key === 'h' || e.key === 'H') {
-
-
-
-
-              mineHint();
-          }
-
-
-
-
-          // EASY
-          if (e.key === '1') {
-
-
-
-
-              mineSize = 8;
-
-
-
-
-              mineCount = 10;
-
-
-
-
-              buildMines();
-          }
-
-
-
-
-          // MEDIUM
-          if (e.key === '2') {
-
-
-
-
-              mineSize = 10;
-
-
-
-
-              mineCount = 15;
-
-
-
-
-              buildMines();
-          }
-
-
-
-
-          // HARD
-          if (e.key === '3') {
-
-
-
-
-              mineSize = 14;
-
-
-
-
-              mineCount = 35;
-
-
-
-
-              buildMines();
-          }
-
-
-
-
-          // increase size
-          if (e.key === '=') {
-
-
-
-
-              if (mineSize < 20) {
-
-
-
-
-                  mineSize++;
-
-
-
-
-                  mineCount =
-                      Math.floor(
-                          mineSize * mineSize * 0.18
-                      );
-
-
-
-
-                  buildMines();
-              }
-          }
-
-
-
-
-          // decrease size
-          if (e.key === '-') {
-
-
-
-
-              if (mineSize > 5) {
-
-
-
-
-                  mineSize--;
-
-
-
-
-                  mineCount =
-                      Math.floor(
-                          mineSize * mineSize * 0.18
-                      );
-
-
-
-
-                  buildMines();
-              }
-          }
-      });
-
-
-
-
-      /* =========================
-         START
-      ========================= */
+  else if(currentGame === 'mine'){
 
 
 
 
       buildMines();
+  }
 
 
 
 
-      /* SNAKE */
-      const sCanvas = document.getElementById('snakeCanvas');
-      const sctx = sCanvas.getContext('2d');
+  else if(currentGame === 'snake'){
 
 
 
 
-      let snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
-      let food = { x: 15, y: 15 };
-      let dx = 1;
-      let dy = 0;
+      resetSnake();
+  }
 
 
 
 
-      document.addEventListener('keydown', e => {
-          if (currentGame !== 'snake') return;
+  else if(currentGame === 'pong'){
 
 
 
 
-          // UP or W
-          if ((e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && dy === 0) {
-              dx = 0;
-              dy = -1;
-          }
+      resetPong();
+  }
 
 
 
 
-          // DOWN or S
-          if ((e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') && dy === 0) {
-              dx = 0;
-              dy = 1;
-          }
+  else if(currentGame === 'breakout'){
 
 
 
 
-          // LEFT or A
-          if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && dx === 0) {
-              dx = -1;
-              dy = 0;
-          }
+      resetBreakout();
+  }
 
 
 
 
-          // RIGHT or D
-          if ((e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') && dx === 0) {
-              dx = 1;
-              dy = 0;
-          }
-      });
+  else if(currentGame === 'space'){
 
 
 
 
-      function resetSnake() {
-          snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
-          dx = 1;
-          dy = 0;
-      }
+      resetSpace();
+  }
+}
 
 
 
 
-      function snakeLoop(){
+
+
+
+
+     function startFlappy() {
+         flappyStarted = true;
+         document.getElementById('flappyStart').style.display = 'none';
+     }
+
+
+
+
+
+
+
+
+     /* FLAPPY */
+     const fCanvas = document.getElementById('flappyCanvas');
+     const fctx = fCanvas.getContext('2d');
+
+
+
+
+
+
+
+
+     let birdY = 250;
+     let velocity = 0;
+     let gravity = 0.5;
+     let pipes = [];
+     let flappyScore = 0;
+
+
+
+
+
+
+
+
+     document.addEventListener('keydown', e => {
+         if (currentGame !== 'flappy') return;
+         if (e.code === 'Space') velocity = -8;
+     });
+
+
+
+
+
+
+
+
+     function resetFlappy() {
+         birdY = 250;
+         velocity = 0;
+         pipes = [];
+         flappyScore = 0;
+     }
+
+
+
+
+
+
+
+
+     function addPipe() {
+         if (currentGame !== 'flappy') return;
+
+
+
+
+
+
+
+
+         let top = Math.random() * 250 + 50;
+
+
+
+
+
+
+
+
+         pipes.push({
+             x: 900,
+             top: top,
+             bottom: top + 170,
+             scored: false
+         });
+     }
+
+
+
+
+
+
+
+
+     setInterval(()=>{
+
+
+   if(
+       currentGame === 'flappy' &&
+       !gamePaused &&
+       flappyStarted
+   ){
+
+
+       addPipe();
+   }
+
+
+},2000);
+
+
+
+
+
+
+
+
+     function flappyLoop() {
+         requestAnimationFrame(flappyLoop);
+
+
+
+
+
+
+
+
+         if (currentGame !== 'flappy') return;
+         if (gamePaused) return;
+         if (!flappyStarted) return;
+
+
+
+
+
+
+
+
+         fctx.clearRect(0, 0, 900, 600);
+
+
+
+
+
+
+
+
+         for (let i = 0; i < 40; i++) {
+             fctx.fillStyle = 'white';
+             fctx.fillRect((i * 140 + Date.now() / 15) % 900, (i * 47) % 600, 2, 2);
+         }
+
+
+
+
+
+
+
+
+         velocity += gravity;
+         birdY += velocity;
+
+
+
+
+
+
+
+
+         fctx.shadowBlur = 8;
+         fctx.shadowColor = 'yellow';
+         fctx.fillStyle = 'yellow';
+         fctx.beginPath();
+         fctx.arc(100, birdY, 20, 0, Math.PI * 2);
+         fctx.fill();
+
+
+
+
+
+
+
+
+         fctx.fillStyle = '#00ff88';
+         fctx.shadowColor = '#00ff88';
+
+
+
+
+
+
+
+
+         pipes.forEach(pipe => {
+             pipe.x -= 3;
+
+
+
+
+
+
+
+
+             fctx.fillRect(pipe.x, 0, 60, pipe.top);
+             fctx.fillRect(pipe.x, pipe.bottom, 60, 600);
+
+
+
+
+
+
+
+
+             if (!pipe.scored && pipe.x < 100) {
+                 flappyScore++;
+                 pipe.scored = true;
+             }
+
+
+
+
+
+
+
+
+             if (120 > pipe.x && 80 < pipe.x + 60 && (birdY - 20 < pipe.top || birdY + 20 > pipe.bottom)) {
+                 showGameOver(flappyScore);
+                 resetFlappy();
+             }
+         });
+
+
+
+
+
+
+
+
+         if (birdY < 0 || birdY > 600) {
+             showGameOver(flappyScore);
+             resetFlappy();
+         }
+
+
+
+
+
+
+
+
+         fctx.shadowBlur = 0;
+         fctx.fillStyle = 'white';
+         fctx.font = '30px Arial';
+         fctx.fillText('Score: ' + flappyScore, 20, 40);
+
+
+
+
+
+
+
+
+         // ground glow
+         fctx.fillStyle = '#222';
+         fctx.fillRect(0, 580, 900, 20);
+     }
+
+
+
+
+
+
+
+
+     flappyLoop();
+
+
+
+
+
+
+
+
+     /* MINESWEEPER */
+     /* ===================================================
+     /* ===================================================
+MINESWEEPER DELUXE
+=================================================== */
+
+
+const mineBoard =
+document.getElementById('minesweeper');
+
+
+let mineSize = 10;
+let mineCount = 15;
+
+
+let mineGrid = [];
+
+
+let mineGameOver = false;
+
+
+let firstMineClick = true;
+
+
+let mineFlags = 0;
+
+
+let mineTimer = 0;
+
+
+let mineInterval = null;
+
+
+let mineHints = 3;
+
+
+/* =========================
+  START MENU
+========================= */
+
+
+function startMinesweeper(size,mines){
+
+
+   mineSize = size;
+
+
+   mineCount = mines;
+
+
+   document.getElementById(
+       'mineMenu'
+   ).style.display = 'none';
+
+
+   document.getElementById(
+       'mineGame'
+   ).style.display = 'flex';
+
+
+   buildMines();
+}
+
+
+/* =========================
+  TIMER
+========================= */
+
+
+function startMineTimer(){
+
+
+   clearInterval(mineInterval);
+
+
+   mineInterval = setInterval(()=>{
+
+
+       if(
+           currentGame === 'mine' &&
+           !mineGameOver &&
+           !gamePaused
+       ){
+
+
+           mineTimer++;
+
+
+           updateMineHud();
+       }
+
+
+   },1000);
+}
+
+
+/* =========================
+  BUILD
+========================= */
+
+
+function buildMines(){
+
+
+   mineBoard.innerHTML = '';
+
+
+   mineBoard.style.gridTemplateColumns =
+   `repeat(${mineSize},1fr)`;
+
+
+   mineGrid = [];
+
+
+   mineGameOver = false;
+
+
+   firstMineClick = true;
+
+
+   mineFlags = 0;
+
+
+   mineTimer = 0;
+
+
+   mineHints = 3;
+
+
+   startMineTimer();
+
+
+   for(let y=0;y<mineSize;y++){
+
+
+       let row = [];
+
+
+       for(let x=0;x<mineSize;x++){
+
+
+           row.push({
+
+
+               mine:false,
+
+
+               revealed:false,
+
+
+               flagged:false,
+
+
+               number:0,
+
+
+               x,
+               y
+           });
+       }
+
+
+       mineGrid.push(row);
+   }
+
+
+   renderMineBoard();
+
+
+   updateMineHud();
+}
+
+
+/* =========================
+  PLACE MINES
+========================= */
+
+
+function placeMines(safeX,safeY){
+
+
+   let placed = 0;
+
+
+   while(placed < mineCount){
+
+
+       const rx =
+       Math.floor(Math.random()*mineSize);
+
+
+       const ry =
+       Math.floor(Math.random()*mineSize);
+
+
+       if(mineGrid[ry][rx].mine) continue;
+
+
+       if(
+           Math.abs(rx-safeX)<=1 &&
+           Math.abs(ry-safeY)<=1
+       ) continue;
+
+
+       mineGrid[ry][rx].mine = true;
+
+
+       placed++;
+   }
+
+
+   for(let y=0;y<mineSize;y++){
+
+
+       for(let x=0;x<mineSize;x++){
+
+
+           let count = 0;
+
+
+           for(let dy=-1;dy<=1;dy++){
+
+
+               for(let dx=-1;dx<=1;dx++){
+
+
+                   const nx = x+dx;
+                   const ny = y+dy;
+
+
+                   if(
+                       nx>=0 &&
+                       ny>=0 &&
+                       nx<mineSize &&
+                       ny<mineSize
+                   ){
+
+
+                       if(
+                           mineGrid[ny][nx].mine
+                       ){
+
+
+                           count++;
+                       }
+                   }
+               }
+           }
+
+
+           mineGrid[y][x].number = count;
+       }
+   }
+}
+
+
+/* =========================
+  REVEAL
+========================= */
+
+
+function revealMine(x,y){
+
+
+   const cell = mineGrid[y][x];
+
+
+   if(
+       cell.revealed ||
+       cell.flagged ||
+       mineGameOver
+   ) return;
+
+
+   if(firstMineClick){
+
+
+       placeMines(x,y);
+
+
+       firstMineClick = false;
+   }
+
+
+   cell.revealed = true;
+
+
+   if(cell.mine){
+
+
+       mineGameOver = true;
+
+
+       revealAllMines();
+
+
+       setTimeout(()=>{
+
+
+           showGameOver(mineFlags);
+
+
+       },400);
+
+
+       return;
+   }
+
+
+   if(cell.number === 0){
+
+
+       for(let dy=-1;dy<=1;dy++){
+
+
+           for(let dx=-1;dx<=1;dx++){
+
+
+               const nx = x+dx;
+               const ny = y+dy;
+
+
+               if(
+                   nx>=0 &&
+                   ny>=0 &&
+                   nx<mineSize &&
+                   ny<mineSize
+               ){
+
+
+                   revealMine(nx,ny);
+               }
+           }
+       }
+   }
+
+
+   renderMineBoard();
+
+
+   checkMineWin();
+}
+
+
+/* =========================
+  FLAGS
+========================= */
+
+
+function toggleFlag(x,y){
+
+
+   const cell = mineGrid[y][x];
+
+
+   if(cell.revealed || mineGameOver)
+   return;
+
+
+   cell.flagged = !cell.flagged;
+
+
+   mineFlags += cell.flagged ? 1 : -1;
+
+
+   renderMineBoard();
+
+
+   updateMineHud();
+}
+
+
+/* =========================
+  REVEAL ALL
+========================= */
+
+
+function revealAllMines(){
+
+
+   mineGrid.forEach(row=>{
+
+
+       row.forEach(cell=>{
+
+
+           if(cell.mine){
+
+
+               cell.revealed = true;
+           }
+       });
+   });
+
+
+   renderMineBoard();
+}
+
+
+/* =========================
+  WIN
+========================= */
+
+
+function checkMineWin(){
+
+
+   let safe = 0;
+
+
+   let revealed = 0;
+
+
+   mineGrid.forEach(row=>{
+
+
+       row.forEach(cell=>{
+
+
+           if(!cell.mine) safe++;
+
+
+           if(
+               cell.revealed &&
+               !cell.mine
+           ){
+
+
+               revealed++;
+           }
+       });
+   });
+
+
+   if(safe === revealed){
+
+
+       mineGameOver = true;
+
+
+       setTimeout(()=>{
+
+
+           alert("YOU WIN!");
+
+
+       },200);
+   }
+}
+
+
+/* =========================
+  HINT
+========================= */
+
+
+function mineHint(){
+
+
+   if(mineHints <= 0) return;
+
+
+   let cells = [];
+
+
+   mineGrid.forEach(row=>{
+
+
+       row.forEach(cell=>{
+
+
+           if(
+               !cell.mine &&
+               !cell.revealed
+           ){
+
+
+               cells.push(cell);
+           }
+       });
+   });
+
+
+   if(cells.length){
+
+
+       const random =
+       cells[
+           Math.floor(
+               Math.random()*cells.length
+           )
+       ];
+
+
+       revealMine(
+           random.x,
+           random.y
+       );
+
+
+       mineHints--;
+
+
+       updateMineHud();
+   }
+}
+
+
+/* =========================
+  HUD
+========================= */
+
+
+function updateMineHud(){
+
+
+   document.getElementById(
+       'mineHud'
+   ).innerHTML =
+   `
+   <div>⏱ Time: ${mineTimer}s</div>
+
+
+   <div>🚩 Flags: ${mineFlags}/${mineCount}</div>
+
+
+   <div>💡 Hints: ${mineHints}</div>
+
+
+   <div>📏 Size: ${mineSize}x${mineSize}</div>
+
+
+   <br>
+
+
+   <div><b>H</b> = Hint</div>
+
+
+   <div><b>+</b> / <b>-</b> Resize</div>
+   `;
+}
+
+
+/* =========================
+  RENDER
+========================= */
+
+
+function renderMineBoard(){
+
+
+   mineBoard.innerHTML = '';
+
+
+   mineGrid.forEach(row=>{
+
+
+       row.forEach(cell=>{
+
+
+           const div =
+           document.createElement('div');
+
+
+           div.className = 'cell';
+
+
+           if(cell.revealed){
+
+
+               div.classList.add(
+                   'revealed'
+               );
+
+
+               if(cell.mine){
+
+
+                   div.innerHTML = '💣';
+
+
+                   div.style.background =
+                   '#ff0033';
+               }
+
+
+               else if(cell.number > 0){
+
+
+                   div.textContent =
+                   cell.number;
+
+
+                   div.style.color =
+                   `hsl(${cell.number*40},100%,60%)`;
+               }
+           }
+
+
+           if(cell.flagged){
+
+
+               div.innerHTML = '🚩';
+           }
+
+
+           div.onclick = ()=>{
+
+
+               revealMine(
+                   cell.x,
+                   cell.y
+               );
+           };
+
+
+           div.oncontextmenu = e=>{
+
+
+               e.preventDefault();
+
+
+               toggleFlag(
+                   cell.x,
+                   cell.y
+               );
+           };
+
+
+           mineBoard.appendChild(div);
+       });
+   });
+}
+
+
+/* =========================
+  CONTROLS
+========================= */
+
+
+window.addEventListener('keydown',e=>{
+
+
+   if(currentGame !== 'mine')
+   return;
+
+
+   if(e.key === 'h' || e.key === 'H'){
+
+
+       mineHint();
+   }
+
+
+   if(e.key === '='){
+
+
+       if(mineSize < 20){
+
+
+           mineSize++;
+
+
+           mineCount =
+           Math.floor(
+               mineSize*mineSize*0.18
+           );
+
+
+           buildMines();
+       }
+   }
+
+
+   if(e.key === '-'){
+
+
+       if(mineSize > 5){
+
+
+           mineSize--;
+
+
+           mineCount =
+           Math.floor(
+               mineSize*mineSize*0.18
+           );
+
+
+           buildMines();
+       }
+   }
+});
+
+
+/* ===================================================
+SNAKE DELUXE
+=================================================== */
+
+
+const sCanvas =
+document.getElementById('snakeCanvas');
+
+
+const sctx =
+sCanvas.getContext('2d');
+
+
+let snake;
+let food;
+
+
+let snakeDX;
+let snakeDY;
+
+
+let snakeScore = 0;
+
+
+/* =========================
+  RESET
+========================= */
+
+
+function resetSnake(){
+
+
+   snake = [
+
+
+       {x:10,y:10},
+       {x:9,y:10},
+       {x:8,y:10}
+
+
+   ];
+
+
+   snakeDX = 1;
+   snakeDY = 0;
+
+
+   snakeScore = 0;
+
+
+   spawnFood();
+}
+
+
+function spawnFood(){
+
+
+   food = {
+
+
+       x: Math.floor(Math.random()*25),
+
+
+       y: Math.floor(Math.random()*25)
+   };
+}
+
+
+/* =========================
+  INPUT
+========================= */
+
+
+window.addEventListener('keydown',e=>{
+
+
+   if(currentGame !== 'snake')
+   return;
+
+
+   // UP
+   if(
+       (e.key === 'ArrowUp' ||
+       e.key === 'w' ||
+       e.key === 'W')
+       &&
+       snakeDY === 0
+   ){
+
+
+       snakeDX = 0;
+       snakeDY = -1;
+   }
+
+
+   // DOWN
+   if(
+       (e.key === 'ArrowDown' ||
+       e.key === 's' ||
+       e.key === 'S')
+       &&
+       snakeDY === 0
+   ){
+
+
+       snakeDX = 0;
+       snakeDY = 1;
+   }
+
+
+   // LEFT
+   if(
+       (e.key === 'ArrowLeft' ||
+       e.key === 'a' ||
+       e.key === 'A')
+       &&
+       snakeDX === 0
+   ){
+
+
+       snakeDX = -1;
+       snakeDY = 0;
+   }
+
+
+   // RIGHT
+   if(
+       (e.key === 'ArrowRight' ||
+       e.key === 'd' ||
+       e.key === 'D')
+       &&
+       snakeDX === 0
+   ){
+
+
+       snakeDX = 1;
+       snakeDY = 0;
+   }
+});
+
+
+/* =========================
+  LOOP
+========================= */
+
+
+function snakeLoop(){
 
 
    requestAnimationFrame(snakeLoop);
 
 
-   if(currentGame !== 'snake') return;
-   if(gamePaused) return;
+   if(currentGame !== 'snake')
+   return;
+
+
+   if(gamePaused)
+   return;
 
 
    if(!snakeLoop.lastUpdate){
@@ -2655,26 +3298,47 @@ function restartCurrentGame(){
    const now = Date.now();
 
 
-   if(now - snakeLoop.lastUpdate < 120){
-
-
-       return;
-   }
+   if(now - snakeLoop.lastUpdate < 100)
+   return;
 
 
    snakeLoop.lastUpdate = now;
 
 
+   /* =========================
+      BACKGROUND
+   ========================= */
+
+
    sctx.fillStyle = 'black';
-   sctx.fillRect(0,0,500,500);
 
 
-   let head = {
+   sctx.fillRect(
+       0,
+       0,
+       500,
+       500
+   );
 
 
-       x: snake[0].x + dx,
-       y: snake[0].y + dy
+   /* =========================
+      MOVE
+   ========================= */
+
+
+   const head = {
+
+
+       x: snake[0].x + snakeDX,
+
+
+       y: snake[0].y + snakeDY
    };
+
+
+   /* =========================
+      WALL COLLISION
+   ========================= */
 
 
    if(
@@ -2685,9 +3349,7 @@ function restartCurrentGame(){
    ){
 
 
-       showGameOver(
-           snake.length - 3
-       );
+       showGameOver(snakeScore);
 
 
        resetSnake();
@@ -2695,6 +3357,11 @@ function restartCurrentGame(){
 
        return;
    }
+
+
+   /* =========================
+      SELF COLLISION
+   ========================= */
 
 
    for(let part of snake){
@@ -2706,9 +3373,7 @@ function restartCurrentGame(){
        ){
 
 
-           showGameOver(
-               snake.length - 3
-           );
+           showGameOver(snakeScore);
 
 
            resetSnake();
@@ -2722,18 +3387,21 @@ function restartCurrentGame(){
    snake.unshift(head);
 
 
+   /* =========================
+      FOOD
+   ========================= */
+
+
    if(
        head.x === food.x &&
        head.y === food.y
    ){
 
 
-       food = {
+       snakeScore++;
 
 
-           x: Math.floor(Math.random()*25),
-           y: Math.floor(Math.random()*25)
-       };
+       spawnFood();
    }
 
 
@@ -2744,15 +3412,31 @@ function restartCurrentGame(){
    }
 
 
+   /* =========================
+      FOOD DRAW
+   ========================= */
+
+
+   sctx.shadowBlur = 20;
+
+
+   sctx.shadowColor = 'red';
+
+
    sctx.fillStyle = 'red';
 
 
    sctx.fillRect(
-       food.x*20,
-       food.y*20,
+       food.x * 20,
+       food.y * 20,
        20,
        20
    );
+
+
+   /* =========================
+      SNAKE DRAW
+   ========================= */
 
 
    snake.forEach((part,index)=>{
@@ -2765,33 +3449,49 @@ function restartCurrentGame(){
 
 
        sctx.fillRect(
-           part.x*20,
-           part.y*20,
+           part.x * 20,
+           part.y * 20,
            18,
            18
        );
    });
+
+
+   sctx.shadowBlur = 0;
+
+
+   /* =========================
+      HUD
+   ========================= */
+
+
+   sctx.fillStyle = 'white';
+
+
+   sctx.font = '28px Arial';
+
+
+   sctx.fillText(
+       'Score: ' + snakeScore,
+       20,
+       35
+   );
 }
+
+
+resetSnake();
 
 
 snakeLoop();
 
 
-
-
-      snakeLoop();
-
-
-
-
-/* REPLACE YOUR ENTIRE PONG CODE WITH THIS */
-
-
-
-
 /* ===================================================
 PONG DELUXE
 =================================================== */
+
+
+
+
 
 
 
@@ -2802,15 +3502,27 @@ document.getElementById("pongCanvas");
 
 
 
+
+
+
+
 const pctx =
 pongCanvas.getContext("2d");
 
 
 
 
+
+
+
+
 /* =========================
- VARIABLES
+VARIABLES
 ========================= */
+
+
+
+
 
 
 
@@ -2821,8 +3533,16 @@ let rightPaddleY = 180;
 
 
 
+
+
+
+
 let leftScore = 0;
 let rightScore = 0;
+
+
+
+
 
 
 
@@ -2833,8 +3553,16 @@ let pongBallY = 250;
 
 
 
+
+
+
+
 let pongDX = 5;
 let pongDY = 4;
+
+
+
+
 
 
 
@@ -2845,13 +3573,25 @@ let leftDown = false;
 
 
 
+
+
+
+
 let rightUp = false;
 let rightDown = false;
 
 
 
 
+
+
+
+
 let pongPaused = false;
+
+
+
+
 
 
 
@@ -2862,9 +3602,17 @@ let pongMode = "menu";
 
 
 
+
+
+
+
 /* =========================
- KEYDOWN
+KEYDOWN
 ========================= */
+
+
+
+
 
 
 
@@ -2874,123 +3622,211 @@ document.addEventListener("keydown",e=>{
 
 
 
-  if(currentGame !== "pong") return;
 
 
 
 
-  /* =========================
-     MENU
-  ========================= */
+ if(currentGame !== "pong") return;
 
 
 
 
-  if(pongMode === "menu"){
 
 
 
 
-      if(e.key === "1"){
+ /* =========================
+    MENU
+ ========================= */
 
 
 
 
-          pongMode = "ai";
 
 
 
 
-          resetPong();
-      }
+ if(pongMode === "menu"){
 
 
 
 
-      if(e.key === "2"){
 
 
 
 
-          pongMode = "two";
+     if(e.key === "1"){
 
 
 
 
-          resetPong();
-      }
 
 
 
 
-      return;
-  }
+         pongMode = "ai";
 
 
 
 
-  /* =========================
-     LEFT PLAYER
-  ========================= */
 
 
 
 
-  if(e.key === "w" || e.key === "W"){
+         resetPong();
+     }
 
 
 
 
-      leftUp = true;
-  }
 
 
 
 
-  if(e.key === "s" || e.key === "S"){
+     if(e.key === "2"){
 
 
 
 
-      leftDown = true;
-  }
 
 
 
 
-  /* =========================
-     RIGHT PLAYER
-  ========================= */
+         pongMode = "two";
 
 
 
 
-  if(e.key === "ArrowUp"){
 
 
 
 
-      rightUp = true;
-  }
+         resetPong();
+     }
 
 
 
 
-  if(e.key === "ArrowDown"){
 
 
 
 
-      rightDown = true;
-  }
+     return;
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    LEFT PLAYER
+ ========================= */
+
+
+
+
+
+
+
+
+ if(e.key === "w" || e.key === "W"){
+
+
+
+
+
+
+
+
+     leftUp = true;
+ }
+
+
+
+
+
+
+
+
+ if(e.key === "s" || e.key === "S"){
+
+
+
+
+
+
+
+
+     leftDown = true;
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    RIGHT PLAYER
+ ========================= */
+
+
+
+
+
+
+
+
+ if(e.key === "ArrowUp"){
+
+
+
+
+
+
+
+
+     rightUp = true;
+ }
+
+
+
+
+
+
+
+
+ if(e.key === "ArrowDown"){
+
+
+
+
+
+
+
+
+     rightDown = true;
+ }
 });
 
 
 
 
+
+
+
+
 /* =========================
- KEYUP
+KEYUP
 ========================= */
+
+
+
+
 
 
 
@@ -3000,73 +3836,125 @@ document.addEventListener("keyup",e=>{
 
 
 
-  if(currentGame !== "pong") return;
 
 
 
 
-  /* =========================
-     LEFT PLAYER
-  ========================= */
+ if(currentGame !== "pong") return;
 
 
 
 
-  if(e.key === "w" || e.key === "W"){
 
 
 
 
-      leftUp = false;
-  }
+ /* =========================
+    LEFT PLAYER
+ ========================= */
 
 
 
 
-  if(e.key === "s" || e.key === "S"){
 
 
 
 
-      leftDown = false;
-  }
+ if(e.key === "w" || e.key === "W"){
 
 
 
 
-  /* =========================
-     RIGHT PLAYER
-  ========================= */
 
 
 
 
-  if(e.key === "ArrowUp"){
+     leftUp = false;
+ }
 
 
 
 
-      rightUp = false;
-  }
 
 
 
 
-  if(e.key === "ArrowDown"){
+ if(e.key === "s" || e.key === "S"){
 
 
 
 
-      rightDown = false;
-  }
+
+
+
+
+     leftDown = false;
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    RIGHT PLAYER
+ ========================= */
+
+
+
+
+
+
+
+
+ if(e.key === "ArrowUp"){
+
+
+
+
+
+
+
+
+     rightUp = false;
+ }
+
+
+
+
+
+
+
+
+ if(e.key === "ArrowDown"){
+
+
+
+
+
+
+
+
+     rightDown = false;
+ }
 });
 
 
 
 
+
+
+
+
 /* =========================
- RESET
+RESET
 ========================= */
+
+
+
+
 
 
 
@@ -3076,47 +3964,83 @@ function resetPong(){
 
 
 
-  leftPaddleY = 180;
-  rightPaddleY = 180;
 
 
 
 
-  pongBallX = 350;
-  pongBallY = 250;
+ leftPaddleY = 180;
+ rightPaddleY = 180;
 
 
 
 
-  pongDX =
-  (Math.random() > 0.5 ? 5 : -5);
 
 
 
 
-  pongDY =
-  (Math.random()*6)-3;
+ pongBallX = 350;
+ pongBallY = 250;
 
 
 
 
-  pongPaused = true;
 
 
 
 
-  setTimeout(()=>{
+ pongDX =
+ (Math.random() > 0.5 ? 5 : -5);
 
 
 
 
-      pongPaused = false;
 
 
 
 
-  },1000);
+ pongDY =
+ (Math.random()*6)-3;
+
+
+
+
+
+
+
+
+ pongPaused = true;
+
+
+
+
+
+
+
+
+ setTimeout(()=>{
+
+
+
+
+
+
+
+
+     pongPaused = false;
+
+
+
+
+
+
+
+
+ },1000);
 }
+
+
+
+
 
 
 
@@ -3126,27 +4050,47 @@ function setPongMode(mode){
 
 
 
-  pongMode = mode;
 
 
 
 
-  document.getElementById(
-      "pongMenu"
-  ).style.display = "none";
+ pongMode = mode;
 
 
 
 
-  resetPong();
+
+
+
+
+ document.getElementById(
+     "pongMenu"
+ ).style.display = "none";
+
+
+
+
+
+
+
+
+ resetPong();
 }
 
 
 
 
+
+
+
+
 /* =========================
- RETURN TO MENU
+RETURN TO MENU
 ========================= */
+
+
+
+
 
 
 
@@ -3156,51 +4100,87 @@ function backToPongMenu(){
 
 
 
-  pongMode = "menu";
 
 
 
 
-  leftScore = 0;
-  rightScore = 0;
+ pongMode = "menu";
 
 
 
 
-  pongPaused = true;
 
 
 
 
-  leftUp = false;
-  leftDown = false;
+ leftScore = 0;
+ rightScore = 0;
 
 
 
 
-  rightUp = false;
-  rightDown = false;
 
 
 
 
-  pongBallX = 350;
-  pongBallY = 250;
+ pongPaused = true;
 
 
 
 
-  document.getElementById(
-      "pongMenu"
-  ).style.display = "flex";
+
+
+
+
+ leftUp = false;
+ leftDown = false;
+
+
+
+
+
+
+
+
+ rightUp = false;
+ rightDown = false;
+
+
+
+
+
+
+
+
+ pongBallX = 350;
+ pongBallY = 250;
+
+
+
+
+
+
+
+
+ document.getElementById(
+     "pongMenu"
+ ).style.display = "flex";
 }
 
 
 
 
+
+
+
+
 /* =========================
- LOOP
+LOOP
 ========================= */
+
+
+
+
 
 
 
@@ -3210,518 +4190,850 @@ function pongLoop(){
 
 
 
-  requestAnimationFrame(pongLoop);
 
 
 
 
-  if(currentGame !== "pong") return;
+ requestAnimationFrame(pongLoop);
 
 
 
 
-  pctx.clearRect(0,0,700,500);
 
 
 
 
-  /* =========================
-     BACKGROUND
-  ========================= */
+ if(currentGame !== "pong") return;
 
 
 
 
-  pctx.fillStyle = "black";
 
 
 
 
-  pctx.fillRect(0,0,700,500);
+ pctx.clearRect(0,0,700,500);
 
 
 
 
-  /* =========================
-     MENU
-  ========================= */
 
 
 
 
+ /* =========================
+    BACKGROUND
+ ========================= */
 
 
 
 
-  /* =========================
-     MIDDLE LINE
-  ========================= */
 
 
 
 
-  for(let i=0;i<500;i+=30){
+ pctx.fillStyle = "black";
 
 
 
 
-      pctx.fillStyle = "white";
 
 
 
 
-      pctx.fillRect(
-          347,
-          i,
-          6,
-          18
-      );
-  }
+ pctx.fillRect(0,0,700,500);
 
 
 
 
-  /* =========================
-     CONTROLS
-  ========================= */
 
 
 
 
-  if(leftUp){
+ /* =========================
+    MENU
+ ========================= */
 
 
 
 
-      leftPaddleY -= 7;
-  }
 
 
 
 
-  if(leftDown){
 
 
 
 
-      leftPaddleY += 7;
-  }
 
 
 
 
-  // AI MODE
-  if(pongMode === "ai"){
+ /* =========================
+    MIDDLE LINE
+ ========================= */
 
 
 
 
-      const center =
-      rightPaddleY + 50;
 
 
 
 
-      if(center < pongBallY - 10){
+ for(let i=0;i<500;i+=30){
 
 
 
 
-          rightPaddleY += 5;
-      }
 
 
 
 
-      if(center > pongBallY + 10){
+     pctx.fillStyle = "white";
 
 
 
 
-          rightPaddleY -= 5;
-      }
-  }
 
 
 
 
-  // TWO PLAYER
-  if(pongMode === "two"){
+     pctx.fillRect(
+         347,
+         i,
+         6,
+         18
+     );
+ }
 
 
 
 
-      if(rightUp){
 
 
 
 
-          rightPaddleY -= 7;
-      }
+ /* =========================
+    CONTROLS
+ ========================= */
 
 
 
 
-      if(rightDown){
 
 
 
 
-          rightPaddleY += 7;
-      }
-  }
+ if(leftUp){
 
 
 
 
-  // clamp paddles
-  leftPaddleY =
-  Math.max(
-      0,
-      Math.min(400,leftPaddleY)
-  );
 
 
 
 
-  rightPaddleY =
-  Math.max(
-      0,
-      Math.min(400,rightPaddleY)
-  );
+     leftPaddleY -= 7;
+ }
 
 
 
 
-  /* =========================
-     DRAW PADDLES
-  ========================= */
 
 
 
 
-  pctx.shadowBlur = 8;
+ if(leftDown){
 
 
 
 
-  pctx.shadowColor = "#00ffff";
 
 
 
 
-  pctx.fillStyle = "#00ffff";
+     leftPaddleY += 7;
+ }
 
 
 
 
-  pctx.fillRect(
-      20,
-      leftPaddleY,
-      18,
-      100
-  );
 
 
 
 
-  pctx.shadowColor = "#ff00ff";
+ // AI MODE
+ if(pongMode === "ai"){
 
 
 
 
-  pctx.fillStyle = "#ff00ff";
 
 
 
 
-  pctx.fillRect(
-      662,
-      rightPaddleY,
-      18,
-      100
-  );
+     const center =
+     rightPaddleY + 50;
 
 
 
 
-  pctx.shadowBlur = 0;
 
 
 
 
-  /* =========================
-     BALL MOVEMENT
-  ========================= */
+     if(center < pongBallY - 10){
 
 
 
 
-  if(!pongPaused){
 
 
 
 
-      pongBallX += pongDX;
+         rightPaddleY += 5;
+     }
 
 
 
 
-      pongBallY += pongDY;
-  }
 
 
 
 
-  /* =========================
-     DRAW BALL
-  ========================= */
+     if(center > pongBallY + 10){
 
 
 
 
-  pctx.shadowBlur = 8;
 
 
 
 
-  pctx.shadowColor = "white";
+         rightPaddleY -= 5;
+     }
+ }
 
 
 
 
-  pctx.fillStyle = "white";
 
 
 
 
-  pctx.beginPath();
+ // TWO PLAYER
+ if(pongMode === "two"){
 
 
 
 
-  pctx.arc(
-      pongBallX,
-      pongBallY,
-      10,
-      0,
-      Math.PI*2
-  );
 
 
 
 
-  pctx.fill();
+     if(rightUp){
 
 
 
 
-  pctx.shadowBlur = 0;
 
 
 
 
-  /* =========================
-     WALL COLLISION
-  ========================= */
+         rightPaddleY -= 7;
+     }
 
 
 
 
-  if(pongBallY < 10 || pongBallY > 490){
 
 
 
 
-      pongDY *= -1;
-  }
+     if(rightDown){
 
 
 
 
-  /* =========================
-     LEFT PADDLE
-  ========================= */
 
 
 
 
-  if(
-      pongBallX < 40 &&
-      pongBallY > leftPaddleY &&
-      pongBallY < leftPaddleY + 100
-  ){
+         rightPaddleY += 7;
+     }
+ }
 
 
 
 
-      const hitPos =
-      (pongBallY - leftPaddleY) / 100;
 
 
 
 
-      pongDX = Math.abs(pongDX);
+ // clamp paddles
+ leftPaddleY =
+ Math.max(
+     0,
+     Math.min(400,leftPaddleY)
+ );
 
 
 
 
-      pongDY = (hitPos - 0.5) * 10;
-  }
 
 
 
 
-  /* =========================
-     RIGHT PADDLE
-  ========================= */
+ rightPaddleY =
+ Math.max(
+     0,
+     Math.min(400,rightPaddleY)
+ );
 
 
 
 
-  if(
-      pongBallX > 660 &&
-      pongBallY > rightPaddleY &&
-      pongBallY < rightPaddleY + 100
-  ){
 
 
 
 
-      const hitPos =
-      (pongBallY - rightPaddleY) / 100;
+ /* =========================
+    DRAW PADDLES
+ ========================= */
 
 
 
 
-      pongDX = -Math.abs(pongDX);
 
 
 
 
-      pongDY = (hitPos - 0.5) * 10;
-  }
+ pctx.shadowBlur = 8;
 
 
 
 
-  /* =========================
-     SCORING
-  ========================= */
 
 
 
 
-  // RIGHT PLAYER SCORES
-  if(pongBallX < 0){
+ pctx.shadowColor = "#00ffff";
 
 
 
 
-      rightScore++;
 
 
 
 
-      resetPong();
-  }
+ pctx.fillStyle = "#00ffff";
 
 
 
 
-  // LEFT PLAYER SCORES
-  if(pongBallX > 700){
 
 
 
 
-      leftScore++;
+ pctx.fillRect(
+     20,
+     leftPaddleY,
+     18,
+     100
+ );
 
 
 
 
-      resetPong();
-  }
 
 
 
 
-  /* =========================
-     HUD
-  ========================= */
+ pctx.shadowColor = "#ff00ff";
 
 
 
 
-  pctx.fillStyle = "white";
 
 
 
 
-  pctx.font = "50px Arial";
+ pctx.fillStyle = "#ff00ff";
 
 
 
 
-  pctx.fillText(
-      leftScore,
-      250,
-      70
-  );
 
 
 
 
-  pctx.fillText(
-      rightScore,
-      420,
-      70
-  );
+ pctx.fillRect(
+     662,
+     rightPaddleY,
+     18,
+     100
+ );
 
 
 
 
-  pctx.font = "18px Arial";
 
 
 
 
-  pctx.fillText(
-      "W / S",
-      20,
-      30
-  );
+ pctx.shadowBlur = 0;
 
 
 
 
-  if(pongMode === "two"){
 
 
 
 
-      pctx.fillText(
-          "↑ / ↓",
-          620,
-          30
-      );
-  }
+ /* =========================
+    BALL MOVEMENT
+ ========================= */
 
 
 
 
-  if(pongMode === "ai"){
 
 
 
 
-      pctx.fillText(
-          "AI",
-          640,
-          30
-      );
-  }
+ if(!pongPaused){
+
+
+
+
+
+
+
+
+     pongBallX += pongDX;
+
+
+
+
+
+
+
+
+     pongBallY += pongDY;
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    DRAW BALL
+ ========================= */
+
+
+
+
+
+
+
+
+ pctx.shadowBlur = 8;
+
+
+
+
+
+
+
+
+ pctx.shadowColor = "white";
+
+
+
+
+
+
+
+
+ pctx.fillStyle = "white";
+
+
+
+
+
+
+
+
+ pctx.beginPath();
+
+
+
+
+
+
+
+
+ pctx.arc(
+     pongBallX,
+     pongBallY,
+     10,
+     0,
+     Math.PI*2
+ );
+
+
+
+
+
+
+
+
+ pctx.fill();
+
+
+
+
+
+
+
+
+ pctx.shadowBlur = 0;
+
+
+
+
+
+
+
+
+ /* =========================
+    WALL COLLISION
+ ========================= */
+
+
+
+
+
+
+
+
+ if(pongBallY < 10 || pongBallY > 490){
+
+
+
+
+
+
+
+
+     pongDY *= -1;
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    LEFT PADDLE
+ ========================= */
+
+
+
+
+
+
+
+
+ if(
+     pongBallX < 40 &&
+     pongBallY > leftPaddleY &&
+     pongBallY < leftPaddleY + 100
+ ){
+
+
+
+
+
+
+
+
+     const hitPos =
+     (pongBallY - leftPaddleY) / 100;
+
+
+
+
+
+
+
+
+     pongDX = Math.abs(pongDX);
+
+
+
+
+
+
+
+
+     pongDY = (hitPos - 0.5) * 10;
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    RIGHT PADDLE
+ ========================= */
+
+
+
+
+
+
+
+
+ if(
+     pongBallX > 660 &&
+     pongBallY > rightPaddleY &&
+     pongBallY < rightPaddleY + 100
+ ){
+
+
+
+
+
+
+
+
+     const hitPos =
+     (pongBallY - rightPaddleY) / 100;
+
+
+
+
+
+
+
+
+     pongDX = -Math.abs(pongDX);
+
+
+
+
+
+
+
+
+     pongDY = (hitPos - 0.5) * 10;
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    SCORING
+ ========================= */
+
+
+
+
+
+
+
+
+ // RIGHT PLAYER SCORES
+ if(pongBallX < 0){
+
+
+
+
+
+
+
+
+     rightScore++;
+
+
+
+
+
+
+
+
+     resetPong();
+ }
+
+
+
+
+
+
+
+
+ // LEFT PLAYER SCORES
+ if(pongBallX > 700){
+
+
+
+
+
+
+
+
+     leftScore++;
+
+
+
+
+
+
+
+
+     resetPong();
+ }
+
+
+
+
+
+
+
+
+ /* =========================
+    HUD
+ ========================= */
+
+
+
+
+
+
+
+
+ pctx.fillStyle = "white";
+
+
+
+
+
+
+
+
+ pctx.font = "50px Arial";
+
+
+
+
+
+
+
+
+ pctx.fillText(
+     leftScore,
+     250,
+     70
+ );
+
+
+
+
+
+
+
+
+ pctx.fillText(
+     rightScore,
+     420,
+     70
+ );
+
+
+
+
+
+
+
+
+ pctx.font = "18px Arial";
+
+
+
+
+
+
+
+
+ pctx.fillText(
+     "W / S",
+     20,
+     30
+ );
+
+
+
+
+
+
+
+
+ if(pongMode === "two"){
+
+
+
+
+
+
+
+
+     pctx.fillText(
+         "↑ / ↓",
+         620,
+         30
+     );
+ }
+
+
+
+
+
+
+
+
+ if(pongMode === "ai"){
+
+
+
+
+
+
+
+
+     pctx.fillText(
+         "AI",
+         640,
+         30
+     );
+ }
 }
+
+
+
+
 
 
 
@@ -3731,1885 +5043,3368 @@ resetPong();
 
 
 
+
+
+
+
 pongLoop();
 
 
 
 
-      /* ===================================================
-      BREAKOUT DELUXE
-      =================================================== */
 
 
 
 
-      const breakCanvas =
-          document.getElementById("breakCanvas");
+     /* ===================================================
+     BREAKOUT DELUXE
+     =================================================== */
 
 
 
 
-      const bctx =
-          breakCanvas.getContext("2d");
 
 
 
 
-      /* =========================
-         VARIABLES
-      ========================= */
+     const breakCanvas =
+         document.getElementById("breakCanvas");
 
 
 
 
-      let paddleX = 290;
 
 
 
 
-      let paddleWidth = 120;
+     const bctx =
+         breakCanvas.getContext("2d");
 
 
 
 
-      let paddleSpeed = 8;
 
 
 
 
-      let breakoutLeft = false;
-      let breakoutRight = false;
+     /* =========================
+        VARIABLES
+     ========================= */
 
 
 
 
-      let breakBallX = 350;
-      let breakBallY = 445;
 
 
 
 
-      let breakDX = 0;
-      let breakDY = 0;
+     let paddleX = 290;
 
 
 
 
-      let breakoutStarted = false;
 
 
 
 
-      let launchAngle = -Math.PI / 4;
+     let paddleWidth = 120;
 
 
 
 
-      let breakoutScore = 0;
 
 
 
 
-      let breakoutLevel = 1;
+     let paddleSpeed = 8;
 
 
 
 
-      let bricks = [];
 
 
 
 
-      let powerups = [];
+     let breakoutLeft = false;
+     let breakoutRight = false;
 
 
 
 
-      let activePowerups = [];
 
 
 
 
-      let showingLevelUp = false;
+     let breakBallX = 350;
+     let breakBallY = 445;
 
 
 
 
-      let shieldActive = false;
 
 
 
 
-      /* =========================
-         INPUT
-      ========================= */
+     let breakDX = 0;
+     let breakDY = 0;
 
 
 
 
-      document.addEventListener("keydown", e => {
 
 
 
 
-          if (currentGame !== "breakout") return;
+     let breakoutStarted = false;
 
 
 
 
-          if (e.key === "a" || e.key === "A") {
 
 
 
 
-              breakoutLeft = true;
-          }
+     let launchAngle = -Math.PI / 4;
 
 
 
 
-          if (e.key === "d" || e.key === "D") {
 
 
 
 
-              breakoutRight = true;
-          }
+     let breakoutScore = 0;
 
 
 
 
-          // launch ball
-          if (e.code === "Space" && !breakoutStarted) {
 
 
 
 
-              breakoutStarted = true;
+     let breakoutLevel = 1;
 
 
 
 
-              const speed = 6;
 
 
 
 
-              breakDX =
-                  Math.cos(launchAngle) * speed;
+     let bricks = [];
 
 
 
 
-              breakDY =
-                  Math.sin(launchAngle) * speed;
-          }
-      });
 
 
 
 
-      document.addEventListener("keyup", e => {
+     let powerups = [];
 
 
 
 
-          if (e.key === "a" || e.key === "A") {
 
 
 
 
-              breakoutLeft = false;
-          }
+     let activePowerups = [];
 
 
 
 
-          if (e.key === "d" || e.key === "D") {
 
 
 
 
-              breakoutRight = false;
-          }
-      });
+     let showingLevelUp = false;
 
 
 
 
-      /* =========================
-         RANDOM LEVEL PATTERNS
-      ========================= */
 
 
 
 
-      function buildBricks() {
+     let shieldActive = false;
 
 
 
 
-          bricks = [];
 
 
 
 
-          function addBrick(col, row, colorShift = 0) {
+     /* =========================
+        INPUT
+     ========================= */
 
 
 
 
-              bricks.push({
 
 
 
 
-                  x: col * 65 + 20,
-                  y: row * 35 + 40,
+     document.addEventListener("keydown", e => {
 
 
 
 
-                  width: 60,
-                  height: 25,
 
 
 
 
-                  color:
-                      `hsl(${(col * 25 + row * 15 + colorShift) % 360},100%,60%)`,
+         if (currentGame !== "breakout") return;
 
 
 
 
-                  hit: false
-              });
-          }
 
 
 
 
-          const patterns = [
+         if (e.key === "a" || e.key === "A") {
 
 
 
 
-              // WALL
-              function () {
 
 
 
 
-                  for (let row = 0; row < 6; row++) {
+             breakoutLeft = true;
+         }
 
 
 
 
-                      for (let col = 0; col < 10; col++) {
 
 
 
 
-                          addBrick(col, row);
-                      }
-                  }
-              },
+         if (e.key === "d" || e.key === "D") {
 
 
 
 
-              // PYRAMID
-              function () {
 
 
 
 
-                  const center = 4.5;
+             breakoutRight = true;
+         }
 
 
 
 
-                  for (let row = 0; row < 6; row++) {
 
 
 
 
-                      const width = 10 - row * 2;
+         // launch ball
+         if (e.code === "Space" && !breakoutStarted) {
 
 
 
 
-                      const start =
-                          Math.floor(center - width / 2 + 0.5);
 
 
 
 
-                      for (let col = start; col < start + width; col++) {
+             breakoutStarted = true;
 
 
 
 
-                          addBrick(col, row, 60);
-                      }
-                  }
-              },
 
 
 
 
-              // DIAMOND
-              function () {
+             const speed = 6;
 
 
 
 
-                  const rows = [
-                      [4, 5],
-                      [3, 4, 5, 6],
-                      [2, 3, 4, 5, 6, 7],
-                      [1, 2, 3, 4, 5, 6, 7, 8],
-                      [2, 3, 4, 5, 6, 7],
-                      [3, 4, 5, 6],
-                      [4, 5]
-                  ];
 
 
 
 
-                  rows.forEach((cols, row) => {
+             breakDX =
+                 Math.cos(launchAngle) * speed;
 
 
 
 
-                      cols.forEach(col => {
 
 
 
 
-                          addBrick(col, row, 120);
-                      });
-                  });
-              },
+             breakDY =
+                 Math.sin(launchAngle) * speed;
+         }
+     });
 
 
 
 
-              // CHECKER
-              function () {
 
 
 
 
-                  for (let row = 0; row < 6; row++) {
+     document.addEventListener("keyup", e => {
 
 
 
 
-                      for (let col = 0; col < 10; col++) {
 
 
 
 
-                          if ((row + col) % 2 === 0) {
+         if (e.key === "a" || e.key === "A") {
 
 
 
 
-                              addBrick(col, row, 180);
-                          }
-                      }
-                  }
-              },
 
 
 
 
-              // X SHAPE
-              function () {
+             breakoutLeft = false;
+         }
 
 
 
 
-                  for (let row = 0; row < 7; row++) {
 
 
 
 
-                      for (let col = 0; col < 10; col++) {
+         if (e.key === "d" || e.key === "D") {
 
 
 
 
-                          if (
-                              col === row ||
-                              col === 9 - row
-                          ) {
 
 
 
 
-                              addBrick(col, row, 240);
-                          }
-                      }
-                  }
-              }
-          ];
+             breakoutRight = false;
+         }
+     });
 
 
 
 
-          const randomPattern =
-              patterns[
-              Math.floor(Math.random() * patterns.length)
-              ];
 
 
 
 
-          randomPattern();
-      }
+     /* =========================
+        RANDOM LEVEL PATTERNS
+     ========================= */
 
 
 
 
-      /* =========================
-         RESET
-      ========================= */
 
 
 
 
-      function resetBreakout() {
+     function buildBricks() {
 
 
 
 
-          paddleX = 290;
 
 
 
 
-          paddleWidth = 120;
+         bricks = [];
 
 
 
 
-          paddleSpeed = 8;
 
 
 
 
-          breakBallX = 350;
-          breakBallY = 445;
+         function addBrick(col, row, colorShift = 0) {
 
 
 
 
-          breakDX = 0;
-          breakDY = 0;
 
 
 
 
-          breakoutStarted = false;
+             bricks.push({
 
 
 
 
-          launchAngle = -Math.PI / 4;
 
 
 
 
-          breakoutScore = 0;
+                 x: col * 65 + 20,
+                 y: row * 35 + 40,
 
 
 
 
-          breakoutLevel = 1;
 
 
 
 
-          powerups = [];
+                 width: 60,
+                 height: 25,
 
 
 
 
-          activePowerups = [];
 
 
 
 
-          shieldActive = false;
+                 color:
+                     `hsl(${(col * 25 + row * 15 + colorShift) % 360},100%,60%)`,
 
 
 
 
-          buildBricks();
-      }
 
 
 
 
-      buildBricks();
+                 hit: false
+             });
+         }
 
 
 
 
-      /* =========================
-         LOOP
-      ========================= */
 
 
 
 
-      function breakoutLoop() {
+         const patterns = [
 
 
 
 
-          requestAnimationFrame(breakoutLoop);
 
 
 
 
-          if (currentGame !== "breakout") return;
+             // WALL
+             function () {
 
 
 
 
-          bctx.clearRect(0, 0, 700, 500);
 
 
 
 
-          /* =========================
-             LEVEL UP SCREEN
-          ========================= */
+                 for (let row = 0; row < 6; row++) {
 
 
 
 
-          if (showingLevelUp) {
 
 
 
 
-              bctx.fillStyle = 'rgba(0,0,0,0.82)';
+                     for (let col = 0; col < 10; col++) {
 
 
 
 
-              bctx.fillRect(0, 0, 700, 500);
 
 
 
 
-              bctx.shadowBlur = 10;
+                         addBrick(col, row);
+                     }
+                 }
+             },
 
 
 
 
-              bctx.shadowColor = 'yellow';
 
 
 
 
-              bctx.fillStyle = 'yellow';
+             // PYRAMID
+             function () {
 
 
 
 
-              bctx.font = '70px Arial';
 
 
 
 
-              bctx.fillText(
-                  'LEVEL UP!',
-                  140,
-                  220
-              );
+                 const center = 4.5;
 
 
 
 
-              bctx.font = '34px Arial';
 
 
 
 
-              bctx.fillText(
-                  'LEVEL ' + breakoutLevel + ' COMPLETE',
-                  140,
-                  290
-              );
+                 for (let row = 0; row < 6; row++) {
 
 
 
 
-              bctx.shadowBlur = 0;
 
 
 
 
-              return;
-          }
+                     const width = 10 - row * 2;
 
 
 
 
-          /* =========================
-             PADDLE
-          ========================= */
 
 
 
 
-          if (breakoutLeft) {
+                     const start =
+                         Math.floor(center - width / 2 + 0.5);
 
 
 
 
-              paddleX -= paddleSpeed;
-          }
 
 
 
 
-          if (breakoutRight) {
+                     for (let col = start; col < start + width; col++) {
 
 
 
 
-              paddleX += paddleSpeed;
-          }
 
 
 
 
-          if (paddleX < 0) {
+                         addBrick(col, row, 60);
+                     }
+                 }
+             },
 
 
 
 
-              paddleX = 0;
-          }
 
 
 
 
-          if (paddleX > 700 - paddleWidth) {
+             // DIAMOND
+             function () {
 
 
 
 
-              paddleX = 700 - paddleWidth;
-          }
 
 
 
 
-          bctx.fillStyle = "white";
+                 const rows = [
+                     [4, 5],
+                     [3, 4, 5, 6],
+                     [2, 3, 4, 5, 6, 7],
+                     [1, 2, 3, 4, 5, 6, 7, 8],
+                     [2, 3, 4, 5, 6, 7],
+                     [3, 4, 5, 6],
+                     [4, 5]
+                 ];
 
 
 
 
-          bctx.fillRect(
-              paddleX,
-              460,
-              paddleWidth,
-              15
-          );
 
 
 
 
-          /* =========================
-             AIM MODE
-          ========================= */
+                 rows.forEach((cols, row) => {
 
 
 
 
-          if (!breakoutStarted) {
 
 
 
 
-              breakBallX =
-                  paddleX + paddleWidth / 2;
+                     cols.forEach(col => {
 
 
 
 
-              breakBallY = 445;
 
 
 
 
-              if (breakoutLeft) {
+                         addBrick(col, row, 120);
+                     });
+                 });
+             },
 
 
 
 
-                  launchAngle -= 0.04;
-              }
 
 
 
 
-              if (breakoutRight) {
+             // CHECKER
+             function () {
 
 
 
 
-                  launchAngle += 0.04;
-              }
 
 
 
 
-              if (launchAngle < -2.5) {
+                 for (let row = 0; row < 6; row++) {
 
 
 
 
-                  launchAngle = -2.5;
-              }
 
 
 
 
-              if (launchAngle > -0.3) {
+                     for (let col = 0; col < 10; col++) {
 
 
 
 
-                  launchAngle = -0.3;
-              }
 
 
 
 
-              bctx.strokeStyle = 'white';
+                         if ((row + col) % 2 === 0) {
 
 
 
 
-              bctx.lineWidth = 3;
 
 
 
 
-              bctx.beginPath();
+                             addBrick(col, row, 180);
+                         }
+                     }
+                 }
+             },
 
 
 
 
-              bctx.moveTo(
-                  breakBallX,
-                  breakBallY
-              );
 
 
 
 
-              bctx.lineTo(
-                  breakBallX +
-                  Math.cos(launchAngle) * 120,
+             // X SHAPE
+             function () {
 
 
 
 
-                  breakBallY +
-                  Math.sin(launchAngle) * 120
-              );
 
 
 
 
-              bctx.stroke();
+                 for (let row = 0; row < 7; row++) {
 
 
 
 
-          } else {
 
 
 
 
-              /* =========================
-                 BALL MOVEMENT
-              ========================= */
+                     for (let col = 0; col < 10; col++) {
 
 
 
 
-              breakBallX += breakDX;
 
 
 
 
-              breakBallY += breakDY;
-          }
+                         if (
+                             col === row ||
+                             col === 9 - row
+                         ) {
 
 
 
 
-          /* =========================
-             BALL DRAW
-          ========================= */
 
 
 
 
-          bctx.shadowBlur = 8;
+                             addBrick(col, row, 240);
+                         }
+                     }
+                 }
+             }
+         ];
 
 
 
 
-          bctx.shadowColor = "cyan";
 
 
 
 
-          bctx.fillStyle = "cyan";
+         const randomPattern =
+             patterns[
+             Math.floor(Math.random() * patterns.length)
+             ];
 
 
 
 
-          bctx.beginPath();
 
 
 
 
-          bctx.arc(
-              breakBallX,
-              breakBallY,
-              10,
-              0,
-              Math.PI * 2
-          );
+         randomPattern();
+     }
 
 
 
 
-          bctx.fill();
 
 
 
 
-          bctx.shadowBlur = 0;
+     /* =========================
+        RESET
+     ========================= */
 
 
 
 
-          /* =========================
-             WALL COLLISION
-          ========================= */
 
 
 
 
-          if (breakBallX < 10 || breakBallX > 690) {
+     function resetBreakout() {
 
 
 
 
-              breakDX *= -1;
-          }
 
 
 
 
-          if (breakBallY < 10) {
+         paddleX = 290;
 
 
 
 
-              breakDY *= -1;
-          }
 
 
 
 
-          /* =========================
-             PADDLE COLLISION
-          ========================= */
+         paddleWidth = 120;
 
 
 
 
-          if (
-              breakBallY + 10 > 460 &&
-              breakBallX > paddleX &&
-              breakBallX < paddleX + paddleWidth
-          ) {
 
 
 
 
-              const hitPos =
-                  (breakBallX - paddleX) /
-                  paddleWidth;
+         paddleSpeed = 8;
 
 
 
 
-              const angle =
-                  (-Math.PI / 1.1) +
-                  (hitPos * (Math.PI / 1.1));
 
 
 
 
-              const speed =
-                  Math.sqrt(
-                      breakDX * breakDX +
-                      breakDY * breakDY
-                  );
+         breakBallX = 350;
+         breakBallY = 445;
 
 
 
 
-              breakDX =
-                  Math.cos(angle) * speed;
 
 
 
 
-              breakDY =
-                  Math.sin(angle) * speed;
+         breakDX = 0;
+         breakDY = 0;
 
 
 
 
-              breakBallY = 449;
-          }
 
 
 
 
-          /* =========================
-             GAME OVER
-          ========================= */
+         breakoutStarted = false;
 
 
 
 
-          if (breakBallY > 500) {
 
 
 
 
-              if (shieldActive) {
+         launchAngle = -Math.PI / 4;
 
 
 
 
-                  shieldActive = false;
 
 
 
 
-                  breakBallX = 350;
-                  breakBallY = 250;
+         breakoutScore = 0;
 
 
 
 
-                  breakDY = -4;
 
 
 
 
-              } else {
+         breakoutLevel = 1;
 
 
 
 
-                  showGameOver(breakoutScore);
 
 
 
 
-                  resetBreakout();
-              }
-          }
+         powerups = [];
 
 
 
 
-          /* =========================
-             BRICKS
-          ========================= */
 
 
 
 
-          bricks.forEach(brick => {
+         activePowerups = [];
 
 
 
 
-              if (brick.hit) return;
 
 
 
 
-              bctx.fillStyle = brick.color;
+         shieldActive = false;
 
 
 
 
-              bctx.fillRect(
-                  brick.x,
-                  brick.y,
-                  brick.width,
-                  brick.height
-              );
 
 
 
 
-              if (
-                  breakBallX > brick.x &&
-                  breakBallX < brick.x + brick.width &&
-                  breakBallY > brick.y &&
-                  breakBallY < brick.y + brick.height
-              ) {
+         buildBricks();
+     }
 
 
 
 
-                  brick.hit = true;
 
 
 
 
-                  breakDY *= -1;
+     buildBricks();
 
 
 
 
-                  breakoutScore++;
 
 
 
 
-                  // powerup drop
-                  if (Math.random() < 0.2) {
+     /* =========================
+        LOOP
+     ========================= */
 
 
 
 
-                      powerups.push({
 
 
 
 
-                          x: brick.x + 25,
-                          y: brick.y,
+     function breakoutLoop() {
 
 
 
 
-                          type: [
-                              'wide',
-                              'slow',
-                              'multi',
-                              'shield',
-                              'speed',
-                              'laser'
-                          ][
-                              Math.floor(Math.random() * 6)
-                          ]
-                      });
-                  }
-              }
-          });
 
 
 
 
-          /* =========================
-             POWERUPS
-          ========================= */
+         requestAnimationFrame(breakoutLoop);
 
 
 
 
-          powerups.forEach(power => {
 
 
 
 
-              power.y += 3;
+         if (currentGame !== "breakout") return;
 
 
 
 
-              const styles = {
 
 
 
 
-                  wide: { color: '#00ffff', label: 'W' },
-                  slow: { color: '#00ff66', label: 'S' },
-                  multi: { color: '#ffcc00', label: 'M' },
-                  shield: { color: '#3399ff', label: 'H' },
-                  speed: { color: '#ff4444', label: 'F' },
-                  laser: { color: '#ff00ff', label: 'L' }
-              };
+         bctx.clearRect(0, 0, 700, 500);
 
 
 
 
-              const style = styles[power.type];
 
 
 
 
-              bctx.shadowBlur = 8;
+         /* =========================
+            LEVEL UP SCREEN
+         ========================= */
 
 
 
 
-              bctx.shadowColor = style.color;
 
 
 
 
-              bctx.fillStyle = style.color;
+         if (showingLevelUp) {
 
 
 
 
-              bctx.beginPath();
 
 
 
 
-              bctx.arc(
-                  power.x,
-                  power.y,
-                  12,
-                  0,
-                  Math.PI * 2
-              );
+             bctx.fillStyle = 'rgba(0,0,0,0.82)';
 
 
 
 
-              bctx.fill();
 
 
 
 
-              bctx.fillStyle = 'white';
+             bctx.fillRect(0, 0, 700, 500);
 
 
 
 
-              bctx.font = 'bold 12px Arial';
 
 
 
 
-              bctx.fillText(
-                  style.label,
-                  power.x - 5,
-                  power.y + 4
-              );
+             bctx.shadowBlur = 10;
 
 
 
 
-              bctx.shadowBlur = 0;
 
 
 
 
-              // collect
-              if (
-                  power.y > 450 &&
-                  power.x > paddleX &&
-                  power.x < paddleX + paddleWidth
-              ) {
+             bctx.shadowColor = 'yellow';
 
 
 
 
-                  const alreadyActive =
-                      activePowerups.find(
-                          p => p.type === power.type
-                      );
 
 
 
 
-                  if (!alreadyActive) {
+             bctx.fillStyle = 'yellow';
 
 
 
 
-                      if (power.type === 'wide') {
 
 
 
 
-                          paddleWidth = 180;
+             bctx.font = '70px Arial';
 
 
 
 
-                          activePowerups.push({
-                              type: 'wide',
-                              time: 600
-                          });
-                      }
 
 
 
 
-                      if (power.type === 'slow') {
+             bctx.fillText(
+                 'LEVEL UP!',
+                 140,
+                 220
+             );
 
 
 
 
-                          breakDX *= 0.7;
-                          breakDY *= 0.7;
 
 
 
 
-                          activePowerups.push({
-                              type: 'slow',
-                              time: 600
-                          });
-                      }
+             bctx.font = '34px Arial';
 
 
 
 
-                      if (power.type === 'shield') {
 
 
 
 
-                          shieldActive = true;
+             bctx.fillText(
+                 'LEVEL ' + breakoutLevel + ' COMPLETE',
+                 140,
+                 290
+             );
 
 
 
 
-                          activePowerups.push({
-                              type: 'shield',
-                              time: 900
-                          });
-                      }
 
 
 
 
-                      if (power.type === 'speed') {
+             bctx.shadowBlur = 0;
 
 
 
 
-                          paddleSpeed = 14;
 
 
 
 
-                          activePowerups.push({
-                              type: 'speed',
-                              time: 700
-                          });
-                      }
+             return;
+         }
 
 
 
 
-                      if (power.type === 'laser') {
 
 
 
 
-                          activePowerups.push({
-                              type: 'laser',
-                              time: 700
-                          });
-                      }
+         /* =========================
+            PADDLE
+         ========================= */
 
 
 
 
-                      if (power.type === 'multi') {
 
 
 
 
-                          breakoutScore += 5;
-                      }
-                  }
+         if (breakoutLeft) {
 
 
 
 
-                  power.collected = true;
-              }
-          });
 
 
 
 
-          powerups =
-              powerups.filter(
-                  power =>
-                      !power.collected &&
-                      power.y < 520
-              );
+             paddleX -= paddleSpeed;
+         }
 
 
 
 
-          /* =========================
-             ACTIVE POWERUPS
-          ========================= */
 
 
 
 
-          activePowerups.forEach(power => {
+         if (breakoutRight) {
 
 
 
 
-              power.time--;
-          });
 
 
 
 
-          activePowerups =
-              activePowerups.filter(
-                  power => power.time > 0
-              );
+             paddleX += paddleSpeed;
+         }
 
 
 
 
-          if (
-              !activePowerups.find(
-                  p => p.type === 'wide'
-              )
-          ) {
 
 
 
 
-              paddleWidth = 120;
-          }
+         if (paddleX < 0) {
 
 
 
 
-          if (
-              !activePowerups.find(
-                  p => p.type === 'speed'
-              )
-          ) {
 
 
 
 
-              paddleSpeed = 8;
-          }
+             paddleX = 0;
+         }
 
 
 
 
-          if (
-              !activePowerups.find(
-                  p => p.type === 'shield'
-              )
-          ) {
 
 
 
 
-              shieldActive = false;
-          }
+         if (paddleX > 700 - paddleWidth) {
 
 
 
 
-          /* =========================
-             LEVEL CLEAR
-          ========================= */
 
 
 
 
-          const remainingBricks =
-              bricks.filter(brick => !brick.hit);
+             paddleX = 700 - paddleWidth;
+         }
 
 
 
 
-          if (
-              remainingBricks.length === 0 &&
-              !showingLevelUp
-          ) {
 
 
 
 
-              showingLevelUp = true;
+         bctx.fillStyle = "white";
 
 
 
 
-              setTimeout(() => {
 
 
 
 
-                  breakoutLevel++;
+         bctx.fillRect(
+             paddleX,
+             460,
+             paddleWidth,
+             15
+         );
 
 
 
 
-                  breakoutStarted = false;
 
 
 
 
-                  breakDX = 0;
-                  breakDY = 0;
+         /* =========================
+            AIM MODE
+         ========================= */
 
 
 
 
-                  powerups = [];
 
 
 
 
-                  buildBricks();
+         if (!breakoutStarted) {
 
 
 
 
-                  showingLevelUp = false;
 
 
 
 
-              }, 2000);
-          }
+             breakBallX =
+                 paddleX + paddleWidth / 2;
 
 
 
 
-          /* =========================
-             HUD
-          ========================= */
 
 
 
 
-          bctx.fillStyle = 'white';
+             breakBallY = 445;
 
 
 
 
-          bctx.font = '26px Arial';
 
 
 
 
-          bctx.fillText(
-              'Score: ' + breakoutScore,
-              20,
-              30
-          );
+             if (breakoutLeft) {
 
 
 
 
-          bctx.fillText(
-              'Level: ' + breakoutLevel,
-              20,
-              60
-          );
 
 
 
 
-          bctx.font = '18px Arial';
+                 launchAngle -= 0.04;
+             }
 
 
 
 
-          activePowerups.forEach((power, index) => {
 
 
 
 
-              bctx.fillText(
-                  power.type.toUpperCase(),
-                  520,
-                  30 + index * 24
-              );
-          });
-      }
+             if (breakoutRight) {
 
 
 
 
-      breakoutLoop();
 
 
 
 
-      /* SPACE SHOOTER */
-      const spaceCanvas = document.getElementById('spaceCanvas');
-      const spctx = spaceCanvas.getContext('2d');
+                 launchAngle += 0.04;
+             }
 
 
 
 
-      let shipX = 320;
-      let shipY = 540;
-      let bullets = [];
-      let enemies = [];
-      let stars = [];
-      let spaceScore = 0;
-      let moveLeft = false;
-      let moveRight = false;
 
 
 
 
-      for (let i = 0; i < 35; i++) {
-          stars.push({
-              x: Math.random() * 700,
-              y: Math.random() * 600,
-              speed: Math.random() * 2 + 1
-          });
-      }
+             if (launchAngle < -2.5) {
 
 
 
 
-      window.addEventListener('keydown', e => {
-          if (currentGame !== 'space') return;
 
 
 
 
-          if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-              moveLeft = true;
-          }
+                 launchAngle = -2.5;
+             }
 
 
 
 
-          if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-              moveRight = true;
-          }
 
 
 
 
-          if (e.code === 'Space') {
-              bullets.push({ x: shipX + 27, y: shipY });
-          }
-      });
+             if (launchAngle > -0.3) {
 
 
 
 
-      window.addEventListener('keyup', e => {
-          if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-              moveLeft = false;
-          }
 
 
 
 
-          if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-              moveRight = false;
-          }
-      });
+                 launchAngle = -0.3;
+             }
 
 
 
 
-      function spawnEnemy() {
-          enemies.push({
-              x: Math.random() * 640,
-              y: -40,
-              speed: Math.random() * 2 + 2
-          });
-      }
 
 
 
 
-      setInterval(() => {
-          if (currentGame === 'space' && !gamePaused) {
-              spawnEnemy();
-          }
-      }, 900);
+             bctx.strokeStyle = 'white';
 
 
 
 
-      function resetSpace() {
-          bullets = [];
-          enemies = [];
-          spaceScore = 0;
-          shipX = 320;
-      }
 
 
 
 
-      function drawShip() {
-          spctx.shadowBlur = 8;
-          spctx.shadowColor = 'cyan';
+             bctx.lineWidth = 3;
 
 
 
 
-          spctx.fillStyle = 'cyan';
 
 
 
 
-          spctx.beginPath();
-          spctx.moveTo(shipX + 30, shipY);
-          spctx.lineTo(shipX, shipY + 50);
-          spctx.lineTo(shipX + 60, shipY + 50);
-          spctx.closePath();
-          spctx.fill();
+             bctx.beginPath();
 
 
 
 
-          spctx.fillStyle = 'white';
-          spctx.fillRect(shipX + 25, shipY + 15, 10, 20);
 
 
 
 
-          spctx.shadowBlur = 0;
-      }
+             bctx.moveTo(
+                 breakBallX,
+                 breakBallY
+             );
 
 
 
 
-      function spaceLoop() {
-          requestAnimationFrame(spaceLoop);
 
 
 
 
-          if (currentGame !== 'space') return;
-          if (gamePaused) return;
+             bctx.lineTo(
+                 breakBallX +
+                 Math.cos(launchAngle) * 120,
 
 
 
 
-          spctx.fillStyle = 'black';
-          spctx.fillRect(0, 0, 700, 600);
 
 
 
 
-          // animated stars
-          stars.forEach(star => {
-              star.y += star.speed;
+                 breakBallY +
+                 Math.sin(launchAngle) * 120
+             );
 
 
 
 
-              if (star.y > 600) {
-                  star.y = 0;
-                  star.x = Math.random() * 700;
-              }
 
 
 
 
-              spctx.fillStyle = 'white';
-              spctx.fillRect(star.x, star.y, 2, 2);
-          });
+             bctx.stroke();
 
 
 
 
-          // movement
-          if (moveLeft) shipX -= 6;
-          if (moveRight) shipX += 6;
 
 
 
 
-          if (shipX < 0) shipX = 0;
-          if (shipX > 640) shipX = 640;
+         } else {
 
 
 
 
-          drawShip();
 
 
 
 
-          // bullets
-          bullets = bullets.filter(b => b.y > -20 && !b.hit);
+             /* =========================
+                BALL MOVEMENT
+             ========================= */
 
 
 
 
-          bullets.forEach(b => {
-              b.y -= 10;
 
 
 
 
-              spctx.shadowBlur = 10;
-              spctx.shadowColor = 'yellow';
+             breakBallX += breakDX;
 
 
 
 
-              spctx.fillStyle = 'yellow';
-              spctx.fillRect(b.x, b.y, 6, 18);
 
 
 
 
-              spctx.shadowBlur = 0;
-          });
+             breakBallY += breakDY;
+         }
 
 
 
 
-          // enemies
-          enemies.forEach(enemy => {
-              if (enemy.y > 600 && !enemy.missed) {
-                  enemy.missed = true;
-                  spaceScore = Math.max(0, spaceScore - 1);
-              }
-          });
 
 
 
 
-          enemies = enemies.filter(enemy => enemy.y < 700 && !enemy.hit);
+         /* =========================
+            BALL DRAW
+         ========================= */
 
 
 
 
-          enemies.forEach(enemy => {
-              enemy.y += enemy.speed;
 
 
 
 
-              spctx.shadowBlur = 8;
-              spctx.shadowColor = 'red';
+         bctx.shadowBlur = 8;
 
 
 
 
-              spctx.fillStyle = 'red';
-              spctx.fillRect(enemy.x, enemy.y, 40, 40);
 
 
 
 
-              spctx.fillStyle = 'orange';
-              spctx.fillRect(enemy.x + 10, enemy.y + 10, 20, 20);
+         bctx.shadowColor = "cyan";
 
 
 
 
-              spctx.shadowBlur = 0;
 
 
 
 
-              // collision with bullets
-              bullets.forEach(b => {
-                  if (
-                      !enemy.hit &&
-                      b.x < enemy.x + 40 &&
-                      b.x + 6 > enemy.x &&
-                      b.y < enemy.y + 40 &&
-                      b.y + 18 > enemy.y
-                  ) {
-                      enemy.hit = true;
-                      b.hit = true;
-                      spaceScore++;
-                  }
-              });
+         bctx.fillStyle = "cyan";
 
 
 
 
-              // collision with player
-              if (
-                  enemy.x < shipX + 60 &&
-                  enemy.x + 40 > shipX &&
-                  enemy.y < shipY + 50 &&
-                  enemy.y + 40 > shipY
-              ) {
-                  showGameOver(spaceScore);
-                  resetSpace();
-              }
-          });
 
 
 
 
-          // HUD
-          spctx.fillStyle = 'white';
-          spctx.font = '30px Arial';
-          spctx.fillText('Score: ' + spaceScore, 20, 40);
+         bctx.beginPath();
 
 
 
 
-          spctx.font = '18px Arial';
-          spctx.fillText('A/D or Arrow Keys to Move • SPACE to Shoot', 20, 75);
-      }
 
 
 
 
-      spaceLoop();
-  </script>
+         bctx.arc(
+             breakBallX,
+             breakBallY,
+             10,
+             0,
+             Math.PI * 2
+         );
+
+
+
+
+
+
+
+
+         bctx.fill();
+
+
+
+
+
+
+
+
+         bctx.shadowBlur = 0;
+
+
+
+
+
+
+
+
+         /* =========================
+            WALL COLLISION
+         ========================= */
+
+
+
+
+
+
+
+
+         if (breakBallX < 10 || breakBallX > 690) {
+
+
+
+
+
+
+
+
+             breakDX *= -1;
+         }
+
+
+
+
+
+
+
+
+         if (breakBallY < 10) {
+
+
+
+
+
+
+
+
+             breakDY *= -1;
+         }
+
+
+
+
+
+
+
+
+         /* =========================
+            PADDLE COLLISION
+         ========================= */
+
+
+
+
+
+
+
+
+         if (
+             breakBallY + 10 > 460 &&
+             breakBallX > paddleX &&
+             breakBallX < paddleX + paddleWidth
+         ) {
+
+
+
+
+
+
+
+
+             const hitPos =
+                 (breakBallX - paddleX) /
+                 paddleWidth;
+
+
+
+
+
+
+
+
+             const angle =
+                 (-Math.PI / 1.1) +
+                 (hitPos * (Math.PI / 1.1));
+
+
+
+
+
+
+
+
+             const speed =
+                 Math.sqrt(
+                     breakDX * breakDX +
+                     breakDY * breakDY
+                 );
+
+
+
+
+
+
+
+
+             breakDX =
+                 Math.cos(angle) * speed;
+
+
+
+
+
+
+
+
+             breakDY =
+                 Math.sin(angle) * speed;
+
+
+
+
+
+
+
+
+             breakBallY = 449;
+         }
+
+
+
+
+
+
+
+
+         /* =========================
+            GAME OVER
+         ========================= */
+
+
+
+
+
+
+
+
+         if (breakBallY > 500) {
+
+
+
+
+
+
+
+
+             if (shieldActive) {
+
+
+
+
+
+
+
+
+                 shieldActive = false;
+
+
+
+
+
+
+
+
+                 breakBallX = 350;
+                 breakBallY = 250;
+
+
+
+
+
+
+
+
+                 breakDY = -4;
+
+
+
+
+
+
+
+
+             } else {
+
+
+
+
+
+
+
+
+                 showGameOver(breakoutScore);
+
+
+
+
+
+
+
+
+                 resetBreakout();
+             }
+         }
+
+
+
+
+
+
+
+
+         /* =========================
+            BRICKS
+         ========================= */
+
+
+
+
+
+
+
+
+         bricks.forEach(brick => {
+
+
+
+
+
+
+
+
+             if (brick.hit) return;
+
+
+
+
+
+
+
+
+             bctx.fillStyle = brick.color;
+
+
+
+
+
+
+
+
+             bctx.fillRect(
+                 brick.x,
+                 brick.y,
+                 brick.width,
+                 brick.height
+             );
+
+
+
+
+
+
+
+
+             if (
+                 breakBallX > brick.x &&
+                 breakBallX < brick.x + brick.width &&
+                 breakBallY > brick.y &&
+                 breakBallY < brick.y + brick.height
+             ) {
+
+
+
+
+
+
+
+
+                 brick.hit = true;
+
+
+
+
+
+
+
+
+                 breakDY *= -1;
+
+
+
+
+
+
+
+
+                 breakoutScore++;
+
+
+
+
+
+
+
+
+                 // powerup drop
+                 if (Math.random() < 0.2) {
+
+
+
+
+
+
+
+
+                     powerups.push({
+
+
+
+
+
+
+
+
+                         x: brick.x + 25,
+                         y: brick.y,
+
+
+
+
+
+
+
+
+                         type: [
+                             'wide',
+                             'slow',
+                             'multi',
+                             'shield',
+                             'speed',
+                             'laser'
+                         ][
+                             Math.floor(Math.random() * 6)
+                         ]
+                     });
+                 }
+             }
+         });
+
+
+
+
+
+
+
+
+         /* =========================
+            POWERUPS
+         ========================= */
+
+
+
+
+
+
+
+
+         powerups.forEach(power => {
+
+
+
+
+
+
+
+
+             power.y += 3;
+
+
+
+
+
+
+
+
+             const styles = {
+
+
+
+
+
+
+
+
+                 wide: { color: '#00ffff', label: 'W' },
+                 slow: { color: '#00ff66', label: 'S' },
+                 multi: { color: '#ffcc00', label: 'M' },
+                 shield: { color: '#3399ff', label: 'H' },
+                 speed: { color: '#ff4444', label: 'F' },
+                 laser: { color: '#ff00ff', label: 'L' }
+             };
+
+
+
+
+
+
+
+
+             const style = styles[power.type];
+
+
+
+
+
+
+
+
+             bctx.shadowBlur = 8;
+
+
+
+
+
+
+
+
+             bctx.shadowColor = style.color;
+
+
+
+
+
+
+
+
+             bctx.fillStyle = style.color;
+
+
+
+
+
+
+
+
+             bctx.beginPath();
+
+
+
+
+
+
+
+
+             bctx.arc(
+                 power.x,
+                 power.y,
+                 12,
+                 0,
+                 Math.PI * 2
+             );
+
+
+
+
+
+
+
+
+             bctx.fill();
+
+
+
+
+
+
+
+
+             bctx.fillStyle = 'white';
+
+
+
+
+
+
+
+
+             bctx.font = 'bold 12px Arial';
+
+
+
+
+
+
+
+
+             bctx.fillText(
+                 style.label,
+                 power.x - 5,
+                 power.y + 4
+             );
+
+
+
+
+
+
+
+
+             bctx.shadowBlur = 0;
+
+
+
+
+
+
+
+
+             // collect
+             if (
+                 power.y > 450 &&
+                 power.x > paddleX &&
+                 power.x < paddleX + paddleWidth
+             ) {
+
+
+
+
+
+
+
+
+                 const alreadyActive =
+                     activePowerups.find(
+                         p => p.type === power.type
+                     );
+
+
+
+
+
+
+
+
+                 if (!alreadyActive) {
+
+
+
+
+
+
+
+
+                     if (power.type === 'wide') {
+
+
+
+
+
+
+
+
+                         paddleWidth = 180;
+
+
+
+
+
+
+
+
+                         activePowerups.push({
+                             type: 'wide',
+                             time: 600
+                         });
+                     }
+
+
+
+
+
+
+
+
+                     if (power.type === 'slow') {
+
+
+
+
+
+
+
+
+                         breakDX *= 0.7;
+                         breakDY *= 0.7;
+
+
+
+
+
+
+
+
+                         activePowerups.push({
+                             type: 'slow',
+                             time: 600
+                         });
+                     }
+
+
+
+
+
+
+
+
+                     if (power.type === 'shield') {
+
+
+
+
+
+
+
+
+                         shieldActive = true;
+
+
+
+
+
+
+
+
+                         activePowerups.push({
+                             type: 'shield',
+                             time: 900
+                         });
+                     }
+
+
+
+
+
+
+
+
+                     if (power.type === 'speed') {
+
+
+
+
+
+
+
+
+                         paddleSpeed = 14;
+
+
+
+
+
+
+
+
+                         activePowerups.push({
+                             type: 'speed',
+                             time: 700
+                         });
+                     }
+
+
+
+
+
+
+
+
+                     if (power.type === 'laser') {
+
+
+
+
+
+
+
+
+                         activePowerups.push({
+                             type: 'laser',
+                             time: 700
+                         });
+                     }
+
+
+
+
+
+
+
+
+                     if (power.type === 'multi') {
+
+
+
+
+
+
+
+
+                         breakoutScore += 5;
+                     }
+                 }
+
+
+
+
+
+
+
+
+                 power.collected = true;
+             }
+         });
+
+
+
+
+
+
+
+
+         powerups =
+             powerups.filter(
+                 power =>
+                     !power.collected &&
+                     power.y < 520
+             );
+
+
+
+
+
+
+
+
+         /* =========================
+            ACTIVE POWERUPS
+         ========================= */
+
+
+
+
+
+
+
+
+         activePowerups.forEach(power => {
+
+
+
+
+
+
+
+
+             power.time--;
+         });
+
+
+
+
+
+
+
+
+         activePowerups =
+             activePowerups.filter(
+                 power => power.time > 0
+             );
+
+
+
+
+
+
+
+
+         if (
+             !activePowerups.find(
+                 p => p.type === 'wide'
+             )
+         ) {
+
+
+
+
+
+
+
+
+             paddleWidth = 120;
+         }
+
+
+
+
+
+
+
+
+         if (
+             !activePowerups.find(
+                 p => p.type === 'speed'
+             )
+         ) {
+
+
+
+
+
+
+
+
+             paddleSpeed = 8;
+         }
+
+
+
+
+
+
+
+
+         if (
+             !activePowerups.find(
+                 p => p.type === 'shield'
+             )
+         ) {
+
+
+
+
+
+
+
+
+             shieldActive = false;
+         }
+
+
+
+
+
+
+
+
+         /* =========================
+            LEVEL CLEAR
+         ========================= */
+
+
+
+
+
+
+
+
+         const remainingBricks =
+             bricks.filter(brick => !brick.hit);
+
+
+
+
+
+
+
+
+         if (
+             remainingBricks.length === 0 &&
+             !showingLevelUp
+         ) {
+
+
+
+
+
+
+
+
+             showingLevelUp = true;
+
+
+
+
+
+
+
+
+             setTimeout(() => {
+
+
+
+
+
+
+
+
+                 breakoutLevel++;
+
+
+
+
+
+
+
+
+                 breakoutStarted = false;
+
+
+
+
+
+
+
+
+                 breakDX = 0;
+                 breakDY = 0;
+
+
+
+
+
+
+
+
+                 powerups = [];
+
+
+
+
+
+
+
+
+                 buildBricks();
+
+
+
+
+
+
+
+
+                 showingLevelUp = false;
+
+
+
+
+
+
+
+
+             }, 2000);
+         }
+
+
+
+
+
+
+
+
+         /* =========================
+            HUD
+         ========================= */
+
+
+
+
+
+
+
+
+         bctx.fillStyle = 'white';
+
+
+
+
+
+
+
+
+         bctx.font = '26px Arial';
+
+
+
+
+
+
+
+
+         bctx.fillText(
+             'Score: ' + breakoutScore,
+             20,
+             30
+         );
+
+
+
+
+
+
+
+
+         bctx.fillText(
+             'Level: ' + breakoutLevel,
+             20,
+             60
+         );
+
+
+
+
+
+
+
+
+         bctx.font = '18px Arial';
+
+
+
+
+
+
+
+
+         activePowerups.forEach((power, index) => {
+
+
+
+
+
+
+
+
+             bctx.fillText(
+                 power.type.toUpperCase(),
+                 520,
+                 30 + index * 24
+             );
+         });
+     }
+
+
+
+
+
+
+
+
+     breakoutLoop();
+
+
+
+
+
+
+
+
+     /* SPACE SHOOTER */
+     const spaceCanvas = document.getElementById('spaceCanvas');
+     const spctx = spaceCanvas.getContext('2d');
+
+
+
+
+
+
+
+
+     let shipX = 320;
+     let shipY = 540;
+     let bullets = [];
+     let enemies = [];
+     let stars = [];
+     let spaceScore = 0;
+     let moveLeft = false;
+     let moveRight = false;
+
+
+
+
+
+
+
+
+     for (let i = 0; i < 35; i++) {
+         stars.push({
+             x: Math.random() * 700,
+             y: Math.random() * 600,
+             speed: Math.random() * 2 + 1
+         });
+     }
+
+
+
+
+
+
+
+
+     window.addEventListener('keydown', e => {
+         if (currentGame !== 'space') return;
+
+
+
+
+
+
+
+
+         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+             moveLeft = true;
+         }
+
+
+
+
+
+
+
+
+         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+             moveRight = true;
+         }
+
+
+
+
+
+
+
+
+         if (e.code === 'Space') {
+             bullets.push({ x: shipX + 27, y: shipY });
+         }
+     });
+
+
+
+
+
+
+
+
+     window.addEventListener('keyup', e => {
+         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+             moveLeft = false;
+         }
+
+
+
+
+
+
+
+
+         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+             moveRight = false;
+         }
+     });
+
+
+
+
+
+
+
+
+     function spawnEnemy() {
+         enemies.push({
+             x: Math.random() * 640,
+             y: -40,
+             speed: Math.random() * 2 + 2
+         });
+     }
+
+
+
+
+
+
+
+
+     setInterval(() => {
+         if (currentGame === 'space' && !gamePaused) {
+             spawnEnemy();
+         }
+     }, 900);
+
+
+
+
+
+
+
+
+     function resetSpace() {
+         bullets = [];
+         enemies = [];
+         spaceScore = 0;
+         shipX = 320;
+     }
+
+
+
+
+
+
+
+
+     function drawShip() {
+         spctx.shadowBlur = 8;
+         spctx.shadowColor = 'cyan';
+
+
+
+
+
+
+
+
+         spctx.fillStyle = 'cyan';
+
+
+
+
+
+
+
+
+         spctx.beginPath();
+         spctx.moveTo(shipX + 30, shipY);
+         spctx.lineTo(shipX, shipY + 50);
+         spctx.lineTo(shipX + 60, shipY + 50);
+         spctx.closePath();
+         spctx.fill();
+
+
+
+
+
+
+
+
+         spctx.fillStyle = 'white';
+         spctx.fillRect(shipX + 25, shipY + 15, 10, 20);
+
+
+
+
+
+
+
+
+         spctx.shadowBlur = 0;
+     }
+
+
+
+
+
+
+
+
+     function spaceLoop() {
+         requestAnimationFrame(spaceLoop);
+
+
+
+
+
+
+
+
+         if (currentGame !== 'space') return;
+         if (gamePaused) return;
+
+
+
+
+
+
+
+
+         spctx.fillStyle = 'black';
+         spctx.fillRect(0, 0, 700, 600);
+
+
+
+
+
+
+
+
+         // animated stars
+         stars.forEach(star => {
+             star.y += star.speed;
+
+
+
+
+
+
+
+
+             if (star.y > 600) {
+                 star.y = 0;
+                 star.x = Math.random() * 700;
+             }
+
+
+
+
+
+
+
+
+             spctx.fillStyle = 'white';
+             spctx.fillRect(star.x, star.y, 2, 2);
+         });
+
+
+
+
+
+
+
+
+         // movement
+         if (moveLeft) shipX -= 6;
+         if (moveRight) shipX += 6;
+
+
+
+
+
+
+
+
+         if (shipX < 0) shipX = 0;
+         if (shipX > 640) shipX = 640;
+
+
+
+
+
+
+
+
+         drawShip();
+
+
+
+
+
+
+
+
+         // bullets
+         bullets = bullets.filter(b => b.y > -20 && !b.hit);
+
+
+
+
+
+
+
+
+         bullets.forEach(b => {
+             b.y -= 10;
+
+
+
+
+
+
+
+
+             spctx.shadowBlur = 10;
+             spctx.shadowColor = 'yellow';
+
+
+
+
+
+
+
+
+             spctx.fillStyle = 'yellow';
+             spctx.fillRect(b.x, b.y, 6, 18);
+
+
+
+
+
+
+
+
+             spctx.shadowBlur = 0;
+         });
+
+
+
+
+
+
+
+
+         // enemies
+         enemies.forEach(enemy => {
+             if (enemy.y > 600 && !enemy.missed) {
+                 enemy.missed = true;
+                 spaceScore = Math.max(0, spaceScore - 1);
+             }
+         });
+
+
+
+
+
+
+
+
+         enemies = enemies.filter(enemy => {
+
+
+   return (
+       enemy.y < 700 &&
+       !enemy.hit
+   );
+});
+
+
+
+
+
+
+
+
+         enemies.forEach(enemy => {
+             enemy.y += enemy.speed;
+
+
+
+
+
+
+
+
+             spctx.shadowBlur = 8;
+             spctx.shadowColor = 'red';
+
+
+
+
+
+
+
+
+             spctx.fillStyle = 'red';
+             spctx.fillRect(enemy.x, enemy.y, 40, 40);
+
+
+
+
+
+
+
+
+             spctx.fillStyle = 'orange';
+             spctx.fillRect(enemy.x + 10, enemy.y + 10, 20, 20);
+
+
+
+
+
+
+
+
+             spctx.shadowBlur = 0;
+
+
+
+
+
+
+
+
+             // collision with bullets
+             bullets.forEach(b => {
+                 if (
+                     !enemy.hit &&
+                     b.x < enemy.x + 40 &&
+                     b.x + 6 > enemy.x &&
+                     b.y < enemy.y + 40 &&
+                     b.y + 18 > enemy.y
+                 ) {
+                     enemy.hit = true;
+                     b.hit = true;
+                     spaceScore++;
+                 }
+             });
+
+
+
+
+
+
+
+
+             // collision with player
+             if (
+                 enemy.x < shipX + 60 &&
+                 enemy.x + 40 > shipX &&
+                 enemy.y < shipY + 50 &&
+                 enemy.y + 40 > shipY
+             ) {
+                 showGameOver(spaceScore);
+                 resetSpace();
+             }
+         });
+
+
+
+
+
+
+
+
+         // HUD
+         spctx.fillStyle = 'white';
+         spctx.font = '30px Arial';
+         spctx.fillText('Score: ' + spaceScore, 20, 40);
+
+
+
+
+
+
+
+
+         spctx.font = '18px Arial';
+         spctx.fillText('A/D or Arrow Keys to Move • SPACE to Shoot', 20, 75);
+     }
+
+
+
+
+
+
+
+
+     spaceLoop();
+
+/* ===================================================
+CROSSY ROAD
+=================================================== */
+
+const crossyCanvas =
+document.getElementById("crossyCanvas");
+
+const cctx =
+crossyCanvas.getContext("2d");
+
+const TILE = 50;
+
+let crossyPlayer = {
+    x: 7,
+    y: 13
+};
+
+let crossyWins = 0;
+
+let crossyCars = [];
+
+let crossyRoadRows = [
+    2,3,
+    5,6,
+    8,9,
+    11,12
+];
+
+/* =========================
+RESET
+========================= */
+
+function resetCrossy() {
+
+    crossyPlayer.x = 7;
+    crossyPlayer.y = 13;
+}
+
+/* =========================
+BUILD CARS
+========================= */
+
+function buildCrossy() {
+
+    crossyCars = [];
+
+    crossyRoadRows.forEach((row,index)=>{
+
+        for(let i=0;i<4;i++){
+
+            crossyCars.push({
+
+                x: Math.random()*700,
+
+                y: row * TILE + 5,
+
+                width: 60,
+
+                height: 40,
+
+                speed:
+                (Math.random()*3 + 4) *
+                (index % 2 === 0 ? 1 : -1),
+
+                color:
+                `hsl(${Math.random()*360},100%,60%)`
+            });
+        }
+    });
+}
+
+buildCrossy();
+
+/* =========================
+MOVEMENT
+========================= */
+
+document.addEventListener("keydown",e=>{
+
+    if(currentGame !== "crossy") return;
+
+    if(gamePaused) return;
+
+    if(e.key === "ArrowUp" || e.key === "w"){
+
+        crossyPlayer.y--;
+    }
+
+    if(e.key === "ArrowDown" || e.key === "s"){
+
+        crossyPlayer.y++;
+    }
+
+    if(e.key === "ArrowLeft" || e.key === "a"){
+
+        crossyPlayer.x--;
+    }
+
+    if(e.key === "ArrowRight" || e.key === "d"){
+
+        crossyPlayer.x++;
+    }
+
+    crossyPlayer.x =
+    Math.max(
+        0,
+        Math.min(13,crossyPlayer.x)
+    );
+
+    crossyPlayer.y =
+    Math.max(
+        0,
+        Math.min(13,crossyPlayer.y)
+    );
+});
+
+/* =========================
+LOOP
+========================= */
+
+function crossyLoop(){
+
+    requestAnimationFrame(crossyLoop);
+
+    if(currentGame !== "crossy") return;
+
+    if(gamePaused) return;
+
+    cctx.clearRect(0,0,700,700);
+
+    /* =========================
+   DRAW MAP
+========================= */
+
+for(let row=0; row<14; row++){
+
+    // TOP SAFE ZONE
+    if(row <= 1){
+
+        cctx.fillStyle = "#33aa33";
+    }
+
+    // ROADS
+    else if(crossyRoadRows.includes(row)){
+
+        cctx.fillStyle = "#555";
+    }
+
+    // GRASS PATHS
+    else{
+
+        cctx.fillStyle = "#2f8f2f";
+    }
+
+    cctx.fillRect(
+        0,
+        row * TILE,
+        700,
+        TILE
+    );
+
+    // road lines
+    if(crossyRoadRows.includes(row)){
+
+        cctx.strokeStyle = "yellow";
+
+        cctx.lineWidth = 4;
+
+        for(let x=0;x<700;x+=40){
+
+            cctx.beginPath();
+
+            cctx.moveTo(
+                x,
+                row*TILE + 25
+            );
+
+            cctx.lineTo(
+                x+20,
+                row*TILE + 25
+            );
+
+            cctx.stroke();
+        }
+    }
+}
+
+    /* =========================
+       DRAW CARS
+    ========================= */
+
+    crossyCars.forEach(car=>{
+
+        car.x += car.speed;
+
+        if(car.speed > 0 && car.x > 760){
+
+            car.x = -80;
+        }
+
+        if(car.speed < 0 && car.x < -80){
+
+            car.x = 760;
+        }
+
+        cctx.fillStyle = car.color;
+
+        cctx.fillRect(
+            car.x,
+            car.y,
+            car.width,
+            car.height
+        );
+
+        // collision
+        if(
+            crossyPlayer.x*TILE+10 < car.x+car.width &&
+            crossyPlayer.x*TILE+40 > car.x &&
+            crossyPlayer.y*TILE+10 < car.y+car.height &&
+            crossyPlayer.y*TILE+40 > car.y
+        ){
+
+            showGameOver(crossyWins);
+
+            resetCrossy();
+        }
+    });
+
+    /* =========================
+       PLAYER
+    ========================= */
+
+    cctx.fillStyle = "white";
+
+    cctx.fillRect(
+        crossyPlayer.x*TILE+8,
+        crossyPlayer.y*TILE+8,
+        34,
+        34
+    );
+
+    cctx.fillStyle = "black";
+
+    cctx.fillRect(
+        crossyPlayer.x*TILE+15,
+        crossyPlayer.y*TILE+15,
+        6,
+        6
+    );
+
+    cctx.fillRect(
+        crossyPlayer.x*TILE+28,
+        crossyPlayer.y*TILE+15,
+        6,
+        6
+    );
+
+    /* =========================
+       WIN
+    ========================= */
+
+    if(crossyPlayer.y <= 0){
+
+        crossyWins++;
+
+        resetCrossy();
+    }
+
+    /* =========================
+       HUD
+    ========================= */
+
+    cctx.fillStyle = "white";
+
+    cctx.font = "32px Arial";
+
+    cctx.fillText(
+        "Wins: " + crossyWins,
+        20,
+        40
+    );
+
+    cctx.font = "18px Arial";
+
+    cctx.fillText(
+        "Reach the top grass!",
+        20,
+        70
+    );
+}
+
+crossyLoop();
+ </script>
 </body>
+
+
+
+
 
 
 
 
 </html>
 ```
-
-
-
-
-
-
-
-
-
