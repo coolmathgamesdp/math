@@ -8757,7 +8757,7 @@ let tagCameraX = 0;
 PLAYERS
 ========================= */
 
-function createTagPlayer(x,color){
+function createTagPlayer(x,color,controls){
 
     return {
 
@@ -8772,9 +8772,23 @@ function createTagPlayer(x,color){
 
         grounded:false,
 
-        color:color
+        color:color,
+
+        controls:controls
     };
 }
+
+/* =========================
+PLAYER COUNT
+========================= */
+
+let tagPlayerCount = 2;
+
+/* =========================
+PLAYERS
+========================= */
+
+let tagPlayers = [];
 
 let player1 =
 createTagPlayer(100,"cyan");
@@ -8802,6 +8816,105 @@ document.addEventListener("keyup",e=>{
     tagKeys[e.key.toLowerCase()] = false;
 });
 
+  /* =========================
+PLAYER MENU
+========================= */
+
+let tagMenuOpen = true;
+
+function buildTagPlayers(){
+
+    tagPlayers = [];
+
+    tagPlayers.push(
+        createTagPlayer(
+            100,
+            "cyan",
+            {
+                left:"a",
+                right:"d",
+                jump:"w"
+            }
+        )
+    );
+
+    tagPlayers.push(
+        createTagPlayer(
+            300,
+            "hotpink",
+            {
+                left:"arrowleft",
+                right:"arrowright",
+                jump:"arrowup"
+            }
+        )
+    );
+
+    if(tagPlayerCount >= 3){
+
+        tagPlayers.push(
+            createTagPlayer(
+                500,
+                "#00ff55",
+                {
+                    left:"j",
+                    right:"l",
+                    jump:"i"
+                }
+            )
+        );
+    }
+
+    if(tagPlayerCount >= 4){
+
+        tagPlayers.push(
+            createTagPlayer(
+                700,
+                "#ff9900",
+                {
+                    left:"f",
+                    right:"h",
+                    jump:"t"
+                }
+            )
+        );
+    }
+}
+
+document.addEventListener("keydown",e=>{
+
+    if(currentGame !== "tag") return;
+
+    if(tagMenuOpen){
+
+        if(e.key === "2"){
+
+            tagPlayerCount = 2;
+
+            buildTagPlayers();
+
+            tagMenuOpen = false;
+        }
+
+        if(e.key === "3"){
+
+            tagPlayerCount = 3;
+
+            buildTagPlayers();
+
+            tagMenuOpen = false;
+        }
+
+        if(e.key === "4"){
+
+            tagPlayerCount = 4;
+
+            buildTagPlayers();
+
+            tagMenuOpen = false;
+        }
+    }
+});
 /* =========================
 MAP
 ========================= */
@@ -8843,15 +8956,13 @@ RESET
 
 function resetTag(){
 
-    player1 =
-    createTagPlayer(100,"cyan");
-
-    player2 =
-    createTagPlayer(300,"hotpink");
+    buildTagPlayers();
 
     player1It = true;
 
     tagTimer = 60;
+
+    tagMenuOpen = true;
 }
 
 /* =========================
@@ -8897,30 +9008,26 @@ function tagCollision(a,b){
 PLAYER PHYSICS
 ========================= */
 
-function updatePlayer(player,left,right,jump){
+function updatePlayer(player){
 
-    /* movement */
+    const c = player.controls;
 
-    if(tagKeys[left]){
+    if(tagKeys[c.left]){
 
         player.dx -= 1.1;
     }
 
-    if(tagKeys[right]){
+    if(tagKeys[c.right]){
 
         player.dx += 1.1;
     }
 
-    /* jump */
-
-    if(tagKeys[jump] && player.grounded){
+    if(tagKeys[c.jump] && player.grounded){
 
         player.dy = -14;
 
         player.grounded = false;
     }
-
-    /* physics */
 
     player.dy += tagGravity;
 
@@ -8931,13 +9038,10 @@ function updatePlayer(player,left,right,jump){
 
     player.grounded = false;
 
-    /* collisions */
-
     tagPlatforms.forEach(p=>{
 
         if(tagCollision(player,p)){
 
-            // landing
             if(
                 player.dy >= 0 &&
                 player.y + player.h - player.dy <= p.y
@@ -8953,8 +9057,6 @@ function updatePlayer(player,left,right,jump){
         }
     });
 
-    /* fall reset */
-
     if(player.y > 900){
 
         player.x = 100;
@@ -8964,7 +9066,6 @@ function updatePlayer(player,left,right,jump){
         player.dy = 0;
     }
 }
-
 /* =========================
 DRAW PLAYER
 ========================= */
