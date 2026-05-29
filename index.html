@@ -9019,197 +9019,147 @@ function tagLoop(){
 
     tctx.clearRect(0,0,700,500);
 
-    /* =========================
-    SKY
-    ========================= */
+/* =========================
+ZOOMED WORLD
+========================= */
 
-    const sky =
-    tctx.createLinearGradient(
-        0,0,0,500
+tctx.save();
+
+tctx.scale(tagZoom, tagZoom);
+
+/* SKY */
+
+const sky =
+tctx.createLinearGradient(
+    0,0,0,700
+);
+
+sky.addColorStop(0,"#4da6ff");
+sky.addColorStop(1,"#6be8ff");
+
+tctx.fillStyle = sky;
+
+tctx.fillRect(0,0,2000,1000);
+
+/* PARALLAX */
+
+tctx.fillStyle =
+"rgba(80,80,255,0.15)";
+
+for(let i=0;i<20;i++){
+
+    tctx.fillRect(
+        i*260 - (tagCameraX*0.3)%260,
+        330 + Math.sin(i)*20,
+        180,
+        180
+    );
+}
+
+/* PLATFORMS */
+
+tagPlatforms.forEach(p=>{
+
+    const drawX =
+    p.x - tagCameraX;
+
+    // grass
+    tctx.fillStyle = "#39ff5a";
+
+    tctx.fillRect(
+        drawX,
+        p.y,
+        p.w,
+        10
     );
 
-    sky.addColorStop(0,"#4da6ff");
-    sky.addColorStop(1,"#6be8ff");
+    // dirt
+    tctx.fillStyle = "#ff3b8d";
 
-    tctx.fillStyle = sky;
-
-    tctx.fillRect(0,0,700,500);
-
-    /* =========================
-    PARALLAX
-    ========================= */
-
-    tctx.fillStyle =
-    "rgba(80,80,255,0.15)";
-
-    for(let i=0;i<20;i++){
-
-        tctx.fillRect(
-            i*260 - (tagCameraX*0.3)%260,
-            330 + Math.sin(i)*20,
-            180,
-            180
-        );
-    }
-
-    /* =========================
-    PLAYERS
-    ========================= */
-
-    updatePlayer(
-        player1,
-        "a",
-        "d",
-        "w"
+    tctx.fillRect(
+        drawX,
+        p.y+10,
+        p.w,
+        p.h-10
     );
 
-    updatePlayer(
-        player2,
-        "arrowleft",
-        "arrowright",
-        "arrowup"
+    // grass detail
+    tctx.fillStyle = "#22cc44";
+
+    for(let i=0;i<p.w;i+=14){
+
+        tctx.fillRect(
+            drawX+i,
+            p.y-3,
+            6,
+            3
+        );
+    }
+});
+
+/* TREES */
+
+for(let i=0;i<14;i++){
+
+    const tx =
+    i*300 - tagCameraX;
+
+    // trunk
+    tctx.fillStyle = "#a00088";
+
+    tctx.fillRect(
+        tx+35,
+        560,
+        18,
+        90
     );
 
-    /* =========================
-    CAMERA
-    ========================= */
+    // leaves
+    tctx.fillStyle = "#00dd55";
 
-    tagCameraX =
-    ((player1.x + player2.x)/2) - 500;
+    tctx.beginPath();
 
-    if(tagCameraX < 0){
+    tctx.arc(
+        tx+45,
+        530,
+        40,
+        0,
+        Math.PI*2
+    );
 
-        tagCameraX = 0;
-    }
+    tctx.fill();
+}
 
-    /* =========================
-    PLATFORMS
-    ========================= */
+/* PLAYERS */
 
-    tagPlatforms.forEach(p=>{
+drawPlayer(player1);
 
-        const drawX =
-        p.x - tagCameraX;
+drawPlayer(player2);
 
-        // grass
-        tctx.fillStyle = "#39ff5a";
+/* IT TEXT */
 
-        tctx.fillRect(
-            drawX,
-            p.y,
-            p.w,
-            10
-        );
+tctx.fillStyle = "white";
 
-        // dirt
-        tctx.fillStyle = "#ff3b8d";
+tctx.font = "20px Arial";
 
-        tctx.fillRect(
-            drawX,
-            p.y+10,
-            p.w,
-            p.h-10
-        );
+if(player1It){
 
-        // grass details
-        tctx.fillStyle = "#22cc44";
+    tctx.fillText(
+        "IT",
+        player1.x - tagCameraX + 5,
+        player1.y - 10
+    );
 
-        for(let i=0;i<p.w;i+=14){
+}else{
 
-            tctx.fillRect(
-                drawX+i,
-                p.y-3,
-                6,
-                3
-            );
-        }
-    });
+    tctx.fillText(
+        "IT",
+        player2.x - tagCameraX + 5,
+        player2.y - 10
+    );
+}
 
-    /* =========================
-    TREES
-    ========================= */
-
-    for(let i=0;i<14;i++){
-
-        const tx =
-        i*300 - tagCameraX;
-
-        // trunk
-        tctx.fillStyle = "#a00088";
-
-        tctx.fillRect(
-            tx+35,
-            560,
-            18,
-            90
-        );
-
-        // leaves
-        tctx.fillStyle = "#00dd55";
-
-        tctx.beginPath();
-
-        tctx.arc(
-            tx+45,
-            530,
-            40,
-            0,
-            Math.PI*2
-        );
-
-        tctx.fill();
-    }
-
-    /* =========================
-    DRAW PLAYERS
-    ========================= */
-
-    drawPlayer(player1);
-
-    drawPlayer(player2);
-
-    /* =========================
-    TAG DETECTION
-    ========================= */
-
-    const dx =
-    player1.x - player2.x;
-
-    const dy =
-    player1.y - player2.y;
-
-    const dist =
-    Math.sqrt(dx*dx + dy*dy);
-
-    if(dist < 45){
-
-        player1It = !player1It;
-    }
-
-    /* =========================
-    IT TEXT
-    ========================= */
-
-    tctx.fillStyle = "white";
-
-    tctx.font = "20px Arial";
-
-    if(player1It){
-
-        tctx.fillText(
-            "IT",
-            player1.x - tagCameraX + 5,
-            player1.y - 10
-        );
-
-    }else{
-
-        tctx.fillText(
-            "IT",
-            player2.x - tagCameraX + 5,
-            player2.y - 10
-        );
-    }
+tctx.restore();
 
     /* =========================
     HUD
