@@ -1463,6 +1463,11 @@
     height: auto;
     max-height: 85vh;
 }
+#frogger canvas{
+    width:min(92vw,700px);
+    height:auto;
+    max-height:85vh;
+}
  </style>
 </head>
 
@@ -1511,6 +1516,14 @@
 onclick="showGame('crossy')">
     Crossy Road
 </button>
+<button class="gameBtn" style="background:#00aa88;"
+onclick="showGame('frogger')">
+    Frogger
+</button>
+<button class="gameBtn" style="background:#ff44aa;"
+onclick="showGame('tag')">
+    Tag
+</button>
      </div>
 
 
@@ -1540,7 +1553,12 @@ onclick="showGame('crossy')">
          <div id="crossy" class="gameScreen">
     <canvas id="crossyCanvas" width="700" height="700"></canvas>
 </div>
-
+<div id="frogger" class="gameScreen">
+    <canvas id="froggerCanvas" width="700" height="700"></canvas>
+</div>
+<div id="tag" class="gameScreen">
+    <canvas id="tagCanvas" width="700" height="500"></canvas>
+</div>
 
 
 
@@ -1888,9 +1906,9 @@ onclick="showGame('crossy')">
 
 <button onclick="showGame('crossy')">Crossy</button>
 
+<button onclick="showGame('frogger')">Frogger</button>
 
-
-
+<button onclick="showGame('tag')">Tag</button>
 
 
 </div>
@@ -2016,7 +2034,9 @@ const map = {
     pong: 2,
     breakout: 3,
     space: 4,
-    crossy: 5
+    crossy: 5,
+    frogger: 6,
+    tag: 7
 };
 
 
@@ -2067,78 +2087,25 @@ const map = {
 
 
 
-function restartCurrentGame(){
+function restartCurrentGame() {
 
+    hideGameOver();
 
+    if (currentGame === 'flappy') resetFlappy();
 
+    if (currentGame === 'snake') resetSnake();
 
-  hideGameOver();
+    if (currentGame === 'pong') resetPong();
 
+    if (currentGame === 'breakout') resetBreakout();
 
+    if (currentGame === 'space') resetSpace();
 
+    if (currentGame === 'crossy') resetCrossy();
 
-  if(currentGame === 'flappy'){
+    if (currentGame === 'frogger') resetFrogger();
 
-
-
-
-      resetFlappy();
-  }
-
-
-
-
-  else if(currentGame === 'mine'){
-
-
-
-
-      buildMines();
-  }
-
-
-
-
-  else if(currentGame === 'snake'){
-
-
-
-
-      resetSnake();
-  }
-
-
-
-
-  else if(currentGame === 'pong'){
-
-
-
-
-      resetPong();
-  }
-
-
-
-
-  else if(currentGame === 'breakout'){
-
-
-
-
-      resetBreakout();
-  }
-
-
-
-
-  else if(currentGame === 'space'){
-
-
-
-
-      resetSpace();
-  }
+    if (currentGame === 'tag') resetTag();
 }
 
 
@@ -8396,6 +8363,888 @@ for(let row=0; row<14; row++){
 }
 
 crossyLoop();
+
+/* ===================================================
+FROGGER
+=================================================== */
+
+const frogCanvas =
+document.getElementById("froggerCanvas");
+
+const fgctx =
+frogCanvas.getContext("2d");
+
+const FROG = 50;
+
+let froggerPlayer = {
+    x: 6,
+    y: 13
+};
+
+let froggerScore = 0;
+
+let frogCars = [];
+let logs = [];
+
+/* =========================
+RESET
+========================= */
+
+function resetFrogger(){
+
+    froggerPlayer.x = 6;
+    froggerPlayer.y = 13;
+}
+
+/* =========================
+BUILD
+========================= */
+
+function buildFrogger(){
+
+    frogCars = [];
+    logs = [];
+
+    // road cars
+    for(let row=8; row<=11; row++){
+
+        for(let i=0;i<4;i++){
+
+            frogCars.push({
+
+                x: Math.random()*700,
+
+                y: row*FROG+5,
+
+                width: 70,
+
+                height: 40,
+
+                speed:
+                (Math.random()*3+3)*
+                (row%2===0?1:-1),
+
+                color:
+                `hsl(${Math.random()*360},100%,60%)`
+            });
+        }
+    }
+
+    // river logs
+    for(let row=2; row<=5; row++){
+
+        for(let i=0;i<3;i++){
+
+            logs.push({
+
+                x: Math.random()*700,
+
+                y: row*FROG+8,
+
+                width: 140,
+
+                height: 34,
+
+                speed:
+                (Math.random()*2+2)*
+                (row%2===0?-1:1)
+            });
+        }
+    }
+}
+
+buildFrogger();
+
+/* =========================
+CONTROLS
+========================= */
+
+document.addEventListener("keydown",e=>{
+
+    if(currentGame !== "frogger") return;
+
+    if(gamePaused) return;
+
+    if(e.key==="ArrowUp"||e.key==="w"){
+
+        froggerPlayer.y--;
+    }
+
+    if(e.key==="ArrowDown"||e.key==="s"){
+
+        froggerPlayer.y++;
+    }
+
+    if(e.key==="ArrowLeft"||e.key==="a"){
+
+        froggerPlayer.x--;
+    }
+
+    if(e.key==="ArrowRight"||e.key==="d"){
+
+        froggerPlayer.x++;
+    }
+
+    froggerPlayer.x =
+    Math.max(
+        0,
+        Math.min(13,froggerPlayer.x)
+    );
+
+    froggerPlayer.y =
+    Math.max(
+        0,
+        Math.min(13,froggerPlayer.y)
+    );
+});
+
+/* =========================
+LOOP
+========================= */
+
+function froggerLoop(){
+
+    requestAnimationFrame(froggerLoop);
+
+    if(currentGame !== "frogger") return;
+
+    if(gamePaused) return;
+
+    fgctx.clearRect(0,0,700,700);
+
+    /* =========================
+       MAP
+    ========================= */
+
+    for(let row=0; row<14; row++){
+
+        // goal grass
+        if(row===0 || row===1){
+
+            fgctx.fillStyle="#33aa33";
+        }
+
+        // river
+        else if(row>=2 && row<=5){
+
+            fgctx.fillStyle="#0066cc";
+        }
+
+        // middle grass
+        else if(row===6 || row===7){
+
+            fgctx.fillStyle="#2f8f2f";
+        }
+
+        // roads
+        else if(row>=8 && row<=11){
+
+            fgctx.fillStyle="#444";
+        }
+
+        // bottom grass
+        else{
+
+            fgctx.fillStyle="#2f8f2f";
+        }
+
+        fgctx.fillRect(
+            0,
+            row*FROG,
+            700,
+            FROG
+        );
+    }
+
+    /* =========================
+       LOGS
+    ========================= */
+
+    let onLog = false;
+
+    logs.forEach(log=>{
+
+        log.x += log.speed;
+
+        if(log.speed>0 && log.x>760){
+
+            log.x = -160;
+        }
+
+        if(log.speed<0 && log.x<-160){
+
+            log.x = 760;
+        }
+
+        fgctx.fillStyle="#8b5a2b";
+
+        fgctx.fillRect(
+            log.x,
+            log.y,
+            log.width,
+            log.height
+        );
+
+        // riding logs
+        if(
+            froggerPlayer.y>=2 &&
+            froggerPlayer.y<=5
+        ){
+
+            if(
+                froggerPlayer.x*FROG+10 < log.x+log.width &&
+                froggerPlayer.x*FROG+40 > log.x
+            ){
+
+                onLog = true;
+
+                froggerPlayer.x += log.speed/50;
+            }
+        }
+    });
+
+/* WATER DEATH */
+
+if(
+    froggerPlayer.y >= 2 &&
+    froggerPlayer.y <= 5
+){
+
+    let safeOnLog = false;
+
+    logs.forEach(log=>{
+
+        if(
+            froggerPlayer.x * FROG + 10 < log.x + log.width &&
+            froggerPlayer.x * FROG + 40 > log.x &&
+            froggerPlayer.y * FROG + 40 > log.y &&
+            froggerPlayer.y * FROG + 10 < log.y + log.height
+        ){
+
+            safeOnLog = true;
+
+            // move with log
+            froggerPlayer.x += log.speed / 50;
+        }
+    });
+
+    if(!safeOnLog){
+
+        showGameOver(froggerScore);
+
+        resetFrogger();
+
+        return;
+    }
+}
+
+    /* =========================
+       CARS
+    ========================= */
+
+    frogCars.forEach(car=>{
+
+        car.x += car.speed;
+
+        if(car.speed>0 && car.x>760){
+
+            car.x=-100;
+        }
+
+        if(car.speed<0 && car.x<-100){
+
+            car.x=760;
+        }
+
+        fgctx.fillStyle=car.color;
+
+        fgctx.fillRect(
+            car.x,
+            car.y,
+            car.width,
+            car.height
+        );
+
+        // collision
+        if(
+            froggerPlayer.x*FROG+10 < car.x+car.width &&
+            froggerPlayer.x*FROG+40 > car.x &&
+            froggerPlayer.y*FROG+10 < car.y+car.height &&
+            froggerPlayer.y*FROG+40 > car.y
+        ){
+
+            showGameOver(froggerScore);
+
+            resetFrogger();
+        }
+    });
+
+    /* =========================
+       PLAYER
+    ========================= */
+
+    fgctx.fillStyle="lime";
+
+    fgctx.beginPath();
+
+    fgctx.arc(
+        froggerPlayer.x*FROG+25,
+        froggerPlayer.y*FROG+25,
+        18,
+        0,
+        Math.PI*2
+    );
+
+    fgctx.fill();
+
+    /* =========================
+       WIN
+    ========================= */
+
+    if(froggerPlayer.y<=0){
+
+        froggerScore++;
+
+        resetFrogger();
+    }
+
+    /* =========================
+       HUD
+    ========================= */
+
+    fgctx.fillStyle="white";
+
+    fgctx.font="30px Arial";
+
+    fgctx.fillText(
+        "Score: "+froggerScore,
+        20,
+        40
+    );
+
+    fgctx.font="18px Arial";
+
+    fgctx.fillText(
+        "Cross traffic and ride logs!",
+        20,
+        70
+    );
+}
+
+froggerLoop();
+
+/* ===================================================
+TAG PLATFORMER
+=================================================== */
+
+const tagCanvas =
+document.getElementById("tagCanvas");
+
+const tctx =
+tagCanvas.getContext("2d");
+const tagZoom = 0.72;
+
+/* =========================
+WORLD
+========================= */
+
+const tagGravity = 0.7;
+const tagFriction = 0.82;
+
+let tagCameraX = 0;
+
+/* =========================
+PLAYERS
+========================= */
+
+function createTagPlayer(x,color){
+
+    return {
+
+        x:x,
+        y:400,
+
+        w:40,
+        h:50,
+
+        dx:0,
+        dy:0,
+
+        grounded:false,
+
+        color:color
+    };
+}
+
+let player1 =
+createTagPlayer(100,"cyan");
+
+let player2 =
+createTagPlayer(300,"hotpink");
+
+let player1It = true;
+
+let tagTimer = 60;
+
+/* =========================
+KEYS
+========================= */
+
+let tagKeys = {};
+
+document.addEventListener("keydown",e=>{
+
+    tagKeys[e.key.toLowerCase()] = true;
+});
+
+document.addEventListener("keyup",e=>{
+
+    tagKeys[e.key.toLowerCase()] = false;
+});
+
+/* =========================
+MAP
+========================= */
+
+const tagPlatforms = [
+
+    // ground
+    {x:0,y:650,w:3500,h:60},
+
+    // floating
+    {x:250,y:560,w:220,h:20},
+    {x:550,y:500,w:220,h:20},
+    {x:900,y:420,w:220,h:20},
+    {x:1250,y:540,w:220,h:20},
+    {x:1600,y:460,w:220,h:20},
+    {x:1950,y:380,w:220,h:20},
+    {x:2300,y:500,w:220,h:20},
+    {x:2700,y:420,w:220,h:20},
+
+    // stairs
+    {x:700,y:620,w:100,h:20},
+    {x:800,y:570,w:100,h:20},
+    {x:900,y:520,w:100,h:20},
+
+    // tower
+    {x:1450,y:600,w:80,h:50},
+    {x:1450,y:540,w:80,h:50},
+    {x:1450,y:480,w:80,h:50},
+
+    // extra platforms
+    {x:2100,y:300,w:180,h:20},
+    {x:2450,y:240,w:180,h:20},
+    {x:2800,y:320,w:180,h:20}
+];
+
+/* =========================
+RESET
+========================= */
+
+function resetTag(){
+
+    player1 =
+    createTagPlayer(100,"cyan");
+
+    player2 =
+    createTagPlayer(300,"hotpink");
+
+    player1It = true;
+
+    tagTimer = 60;
+}
+
+/* =========================
+TIMER
+========================= */
+
+setInterval(()=>{
+
+    if(currentGame !== "tag") return;
+
+    if(gamePaused) return;
+
+    tagTimer--;
+
+    if(tagTimer <= 0){
+
+        showGameOver(
+            player1It
+            ? "PLAYER 2 WINS"
+            : "PLAYER 1 WINS"
+        );
+
+        resetTag();
+    }
+
+},1000);
+
+/* =========================
+COLLISION
+========================= */
+
+function tagCollision(a,b){
+
+    return (
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y
+    );
+}
+
+/* =========================
+PLAYER PHYSICS
+========================= */
+
+function updatePlayer(player,left,right,jump){
+
+    /* movement */
+
+    if(tagKeys[left]){
+
+        player.dx -= 1.1;
+    }
+
+    if(tagKeys[right]){
+
+        player.dx += 1.1;
+    }
+
+    /* jump */
+
+    if(tagKeys[jump] && player.grounded){
+
+        player.dy = -14;
+
+        player.grounded = false;
+    }
+
+    /* physics */
+
+    player.dy += tagGravity;
+
+    player.x += player.dx;
+    player.y += player.dy;
+
+    player.dx *= tagFriction;
+
+    player.grounded = false;
+
+    /* collisions */
+
+    tagPlatforms.forEach(p=>{
+
+        if(tagCollision(player,p)){
+
+            // landing
+            if(
+                player.dy >= 0 &&
+                player.y + player.h - player.dy <= p.y
+            ){
+
+                player.y =
+                p.y - player.h;
+
+                player.dy = 0;
+
+                player.grounded = true;
+            }
+        }
+    });
+
+    /* fall reset */
+
+    if(player.y > 900){
+
+        player.x = 100;
+        player.y = 300;
+
+        player.dx = 0;
+        player.dy = 0;
+    }
+}
+
+/* =========================
+DRAW PLAYER
+========================= */
+
+function drawPlayer(player){
+
+    tctx.shadowBlur = 20;
+
+    tctx.shadowColor = player.color;
+
+    tctx.fillStyle = player.color;
+
+    tctx.fillRect(
+        player.x - tagCameraX,
+        player.y,
+        player.w,
+        player.h
+    );
+
+    tctx.shadowBlur = 0;
+
+    /* eyes */
+
+    tctx.fillStyle = "black";
+
+    tctx.fillRect(
+        player.x - tagCameraX + 8,
+        player.y + 12,
+        6,
+        6
+    );
+
+    tctx.fillRect(
+        player.x - tagCameraX + 24,
+        player.y + 12,
+        6,
+        6
+    );
+}
+
+/* =========================
+MAIN LOOP
+========================= */
+
+function tagLoop(){
+
+    requestAnimationFrame(tagLoop);
+
+    if(currentGame !== "tag") return;
+
+    if(gamePaused) return;
+
+    tctx.clearRect(0,0,700,500);
+
+    /* =========================
+    SKY
+    ========================= */
+
+    const sky =
+    tctx.createLinearGradient(
+        0,0,0,500
+    );
+
+    sky.addColorStop(0,"#4da6ff");
+    sky.addColorStop(1,"#6be8ff");
+
+    tctx.fillStyle = sky;
+
+    tctx.fillRect(0,0,700,500);
+
+    /* =========================
+    PARALLAX
+    ========================= */
+
+    tctx.fillStyle =
+    "rgba(80,80,255,0.15)";
+
+    for(let i=0;i<20;i++){
+
+        tctx.fillRect(
+            i*260 - (tagCameraX*0.3)%260,
+            330 + Math.sin(i)*20,
+            180,
+            180
+        );
+    }
+
+    /* =========================
+    PLAYERS
+    ========================= */
+
+    updatePlayer(
+        player1,
+        "a",
+        "d",
+        "w"
+    );
+
+    updatePlayer(
+        player2,
+        "arrowleft",
+        "arrowright",
+        "arrowup"
+    );
+
+    /* =========================
+    CAMERA
+    ========================= */
+
+    tagCameraX =
+    ((player1.x + player2.x)/2) - 500;
+
+    if(tagCameraX < 0){
+
+        tagCameraX = 0;
+    }
+
+    /* =========================
+    PLATFORMS
+    ========================= */
+
+    tagPlatforms.forEach(p=>{
+
+        const drawX =
+        p.x - tagCameraX;
+
+        // grass
+        tctx.fillStyle = "#39ff5a";
+
+        tctx.fillRect(
+            drawX,
+            p.y,
+            p.w,
+            10
+        );
+
+        // dirt
+        tctx.fillStyle = "#ff3b8d";
+
+        tctx.fillRect(
+            drawX,
+            p.y+10,
+            p.w,
+            p.h-10
+        );
+
+        // grass details
+        tctx.fillStyle = "#22cc44";
+
+        for(let i=0;i<p.w;i+=14){
+
+            tctx.fillRect(
+                drawX+i,
+                p.y-3,
+                6,
+                3
+            );
+        }
+    });
+
+    /* =========================
+    TREES
+    ========================= */
+
+    for(let i=0;i<14;i++){
+
+        const tx =
+        i*300 - tagCameraX;
+
+        // trunk
+        tctx.fillStyle = "#a00088";
+
+        tctx.fillRect(
+            tx+35,
+            560,
+            18,
+            90
+        );
+
+        // leaves
+        tctx.fillStyle = "#00dd55";
+
+        tctx.beginPath();
+
+        tctx.arc(
+            tx+45,
+            530,
+            40,
+            0,
+            Math.PI*2
+        );
+
+        tctx.fill();
+    }
+
+    /* =========================
+    DRAW PLAYERS
+    ========================= */
+
+    drawPlayer(player1);
+
+    drawPlayer(player2);
+
+    /* =========================
+    TAG DETECTION
+    ========================= */
+
+    const dx =
+    player1.x - player2.x;
+
+    const dy =
+    player1.y - player2.y;
+
+    const dist =
+    Math.sqrt(dx*dx + dy*dy);
+
+    if(dist < 45){
+
+        player1It = !player1It;
+    }
+
+    /* =========================
+    IT TEXT
+    ========================= */
+
+    tctx.fillStyle = "white";
+
+    tctx.font = "20px Arial";
+
+    if(player1It){
+
+        tctx.fillText(
+            "IT",
+            player1.x - tagCameraX + 5,
+            player1.y - 10
+        );
+
+    }else{
+
+        tctx.fillText(
+            "IT",
+            player2.x - tagCameraX + 5,
+            player2.y - 10
+        );
+    }
+
+    /* =========================
+    HUD
+    ========================= */
+
+    tctx.fillStyle = "white";
+
+    tctx.font = "28px Arial";
+
+    tctx.fillText(
+        "Time: " + tagTimer,
+        20,
+        40
+    );
+
+    tctx.fillText(
+        player1It
+        ? "Player 1 is IT"
+        : "Player 2 is IT",
+        20,
+        80
+    );
+
+    tctx.font = "18px Arial";
+
+    tctx.fillText(
+        "P1: WASD   P2: Arrow Keys",
+        20,
+        115
+    );
+}
+
+resetTag();
+
+tagLoop();
  </script>
 </body>
 
