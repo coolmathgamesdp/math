@@ -9111,7 +9111,7 @@ function drawPlayer(player){
     player.it ? "red" : player.color;
 
     tctx.fillRect(
-        player.x,
+        player.x - tagCameraX,
         player.y,
         player.w,
         player.h
@@ -9122,14 +9122,14 @@ function drawPlayer(player){
     tctx.fillStyle = "black";
 
     tctx.fillRect(
-        player.x + 8,
+        player.x - tagCameraX + 8,
         player.y + 12,
         6,
         6
     );
 
     tctx.fillRect(
-        player.x + 24,
+        player.x - tagCameraX + 24,
         player.y + 12,
         6,
         6
@@ -9143,7 +9143,7 @@ function drawPlayer(player){
 
         tctx.fillText(
             "IT",
-            player.x + 6,
+            player.x - tagCameraX + 6,
             player.y - 10
         );
     }
@@ -9224,18 +9224,18 @@ function tagLoop(){
 
     /* CAMERA */
 
-    const itPlayer =
-    tagPlayers.find(p=>p.it);
+const focusPlayer =
+tagPlayers.find(p => p.it);
 
-    if(itPlayer){
+if(focusPlayer){
 
-        tagCameraX =
-        itPlayer.x -
-        (700 / tagZoom) / 2;
+    tagCameraX =
+        focusPlayer.x -
+        (tagCanvas.width / tagZoom) / 2;
 
-        if(tagCameraX < 0)
-            tagCameraX = 0;
-    }
+    tagCameraX =
+        Math.max(0, tagCameraX);
+}
 
     /* =========================
     WORLD
@@ -9409,7 +9409,13 @@ function tagLoop(){
     /* =========================
     HUD
     ========================= */
-
+    tctx.fillText(
+    JSON.stringify(
+        tagPlayers.map(p => p.it)
+    ),
+    20,
+    150
+    );
     tctx.fillStyle =
     "white";
 
