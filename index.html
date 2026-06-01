@@ -8760,7 +8760,6 @@ PLAYERS
 function createTagPlayer(x,color,controls){
 
     return {
-
         x:x,
         y:400,
 
@@ -8976,6 +8975,9 @@ function resetTag(){
     tagPlayers[0].it = true;
 
     console.log(tagPlayers);
+
+    tagPlayers.forEach(p => p.it = false);
+    tagPlayers[0].it = true;
 }
 
 /* =========================
@@ -9422,55 +9424,73 @@ if(focusPlayer){
 
     tctx.restore();
 
-    /* =========================
-    HUD
-    ========================= */
-    tctx.fillText(
-    JSON.stringify(
-        tagPlayers.map(p => p.it)
-    ),
+ /* =========================
+HUD
+========================= */
+
+tctx.fillStyle = "white";
+tctx.textAlign = "left";
+
+tctx.font = "30px Arial";
+tctx.fillText(
+    "Time: " + tagTimer,
     20,
-    150
-    );
-    tctx.fillStyle =
-    "white";
+    40
+);
 
-    tctx.font =
-    "28px Arial";
+/* Find IT player */
+
+const itPlayerIndex =
+tagPlayers.findIndex(p => p.it);
+
+tctx.font = "24px Arial";
+
+if(itPlayerIndex !== -1){
 
     tctx.fillText(
-        "Time: " +
-        tagTimer,
+        `Player ${itPlayerIndex + 1} is IT`,
         20,
-        40
-    );
-
-    const itIndex =
-    tagPlayers.findIndex(p=>p.it);
-
-    tctx.fillText(
-    itIndex >= 0
-        ? `Player ${itIndex + 1} is IT`
-        : "No player is IT",
-    20,
-    80
-    );
-    const currentIt =
-    tagPlayers.findIndex(
-        p=>p.it
-    ) + 1;
-
-
-    tctx.font =
-    "18px Arial";
-
-    tctx.fillText(
-        "P1 WASD | P2 Arrows | P3 IJKL | P4 TFGH",
-        20,
-        115
+        80
     );
 }
 
+/* Player Count */
+
+tctx.font = "20px Arial";
+
+tctx.fillText(
+    `Players: ${tagPlayerCount}`,
+    20,
+    115
+);
+
+/* Controls */
+
+let controlsText =
+"P1 WASD | P2 Arrows";
+
+if(tagPlayerCount >= 3){
+    controlsText += " | P3 IJKL";
+}
+
+if(tagPlayerCount >= 4){
+    controlsText += " | P4 TFGH";
+}
+
+tctx.font = "18px Arial";
+
+tctx.fillText(
+    controlsText,
+    20,
+    145
+);
+
+/* Debug (optional) */
+// tctx.fillText(
+//     JSON.stringify(tagPlayers.map(p=>p.it)),
+//     20,
+//     175
+// );
 /* =========================
 START GAME
 ========================= */
@@ -9488,4 +9508,4 @@ tagLoop();
 
 
 </html>
-```
+`
