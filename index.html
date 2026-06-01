@@ -8888,7 +8888,9 @@ document.addEventListener("keydown",e=>{
 
             buildTagPlayers();
 
+            tagPlayers[0].it = true;
             tagMenuOpen = false;
+            
         }
 
         if(e.key === "3"){
@@ -8896,7 +8898,7 @@ document.addEventListener("keydown",e=>{
             tagPlayerCount = 3;
 
             buildTagPlayers();
-
+            tagPlayers[0].it = true;
             tagMenuOpen = false;
         }
 
@@ -8905,7 +8907,7 @@ document.addEventListener("keydown",e=>{
             tagPlayerCount = 4;
 
             buildTagPlayers();
-
+            tagPlayers[0].it = true;
             tagMenuOpen = false;
         }
     }
@@ -9458,13 +9460,6 @@ if(focusPlayer){
         p=>p.it
     ) + 1;
 
-    tctx.fillText(
-        "Player " +
-        currentIt +
-        " is IT",
-        20,
-        80
-    );
 
     tctx.font =
     "18px Arial";
