@@ -8958,12 +8958,21 @@ function resetTag(){
     });
 
     tagPlayers[0].it = true;
+    
 
     tagTimer = 60;
 
     tagCameraX = 0;
 
     tagMenuOpen = true;
+    console.log(tagPlayers);
+
+    tagPlayers.forEach(p=>{
+    p.it = false;
+    });
+
+    tagPlayers[0].it = true;
+
     console.log(tagPlayers);
 }
 
