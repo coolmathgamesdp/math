@@ -8958,9 +8958,13 @@ function resetTag(){
 
     buildTagPlayers();
 
-    player1It = true;
+    tagPlayers.forEach(p=>p.it=false);
+
+    tagPlayers[0].it = true;
 
     tagTimer = 60;
+
+    tagCameraX = 0;
 
     tagMenuOpen = true;
 }
@@ -8975,14 +8979,22 @@ setInterval(()=>{
 
     if(gamePaused) return;
 
+    if(tagMenuOpen) return;
+
     tagTimer--;
 
     if(tagTimer <= 0){
 
+        let loser =
+        tagPlayers.find(p=>p.it);
+
+        let loserIndex =
+        tagPlayers.indexOf(loser)+1;
+
         showGameOver(
-            player1It
-            ? "PLAYER 2 WINS"
-            : "PLAYER 1 WINS"
+            "PLAYER " +
+            loserIndex +
+            " WAS IT!"
         );
 
         resetTag();
@@ -9002,6 +9014,31 @@ function tagCollision(a,b){
         a.y < b.y + b.h &&
         a.y + a.h > b.y
     );
+}
+
+function updateTagging(){
+
+    for(let i=0;i<tagPlayers.length;i++){
+
+        for(let j=0;j<tagPlayers.length;j++){
+
+            if(i===j) continue;
+
+            const a = tagPlayers[i];
+            const b = tagPlayers[j];
+
+            if(
+                a.it &&
+                tagCollision(a,b)
+            ){
+
+                a.it = false;
+                b.it = true;
+
+                return;
+            }
+        }
+    }
 }
 
 /* =========================
@@ -9074,12 +9111,14 @@ function drawPlayer(player){
 
     tctx.shadowBlur = 20;
 
-    tctx.shadowColor = player.color;
+    tctx.shadowColor =
+    player.it ? "red" : player.color;
 
-    tctx.fillStyle = player.color;
+    tctx.fillStyle =
+    player.it ? "red" : player.color;
 
     tctx.fillRect(
-        player.x - tagCameraX,
+        player.x,
         player.y,
         player.w,
         player.h
@@ -9087,23 +9126,34 @@ function drawPlayer(player){
 
     tctx.shadowBlur = 0;
 
-    /* eyes */
-
     tctx.fillStyle = "black";
 
     tctx.fillRect(
-        player.x - tagCameraX + 8,
+        player.x + 8,
         player.y + 12,
         6,
         6
     );
 
     tctx.fillRect(
-        player.x - tagCameraX + 24,
+        player.x + 24,
         player.y + 12,
         6,
         6
     );
+
+    if(player.it){
+
+        tctx.fillStyle = "white";
+
+        tctx.font = "18px Arial";
+
+        tctx.fillText(
+            "IT",
+            player.x + 6,
+            player.y - 10
+        );
+    }
 }
 
 /* =========================
@@ -9116,185 +9166,298 @@ function tagLoop(){
 
     if(currentGame !== "tag") return;
 
+    tctx.clearRect(
+        0,
+        0,
+        tagCanvas.width,
+        tagCanvas.height
+    );
+
+    /* PLAYER SELECT MENU */
+
+    if(tagMenuOpen){
+
+        tctx.fillStyle = "#111";
+        tctx.fillRect(
+            0,
+            0,
+            tagCanvas.width,
+            tagCanvas.height
+        );
+
+        tctx.fillStyle = "white";
+
+        tctx.font = "50px Arial";
+        tctx.fillText(
+            "TAG",
+            290,
+            120
+        );
+
+        tctx.font = "28px Arial";
+
+        tctx.fillText(
+            "Press 2 for 2 Players",
+            180,
+            220
+        );
+
+        tctx.fillText(
+            "Press 3 for 3 Players",
+            180,
+            280
+        );
+
+        tctx.fillText(
+            "Press 4 for 4 Players",
+            180,
+            340
+        );
+
+        return;
+    }
+
     if(gamePaused) return;
 
-    tctx.clearRect(0,0,700,500);
+    /* UPDATE PLAYERS */
 
-/* =========================
-ZOOMED WORLD
-========================= */
+    tagPlayers.forEach(player=>{
 
-tctx.save();
+        updatePlayer(player);
 
-tctx.scale(tagZoom, tagZoom);
+    });
 
-/* SKY */
+    updateTagging();
 
-const sky =
-tctx.createLinearGradient(
-    0,0,0,700
-);
+    /* CAMERA */
 
-sky.addColorStop(0,"#4da6ff");
-sky.addColorStop(1,"#6be8ff");
+    const itPlayer =
+    tagPlayers.find(p=>p.it);
 
-tctx.fillStyle = sky;
+    if(itPlayer){
 
-tctx.fillRect(0,0,2000,1000);
+        tagCameraX =
+        itPlayer.x -
+        (700 / tagZoom) / 2;
 
-/* PARALLAX */
+        if(tagCameraX < 0)
+            tagCameraX = 0;
+    }
 
-tctx.fillStyle =
-"rgba(80,80,255,0.15)";
+    /* =========================
+    WORLD
+    ========================= */
 
-for(let i=0;i<20;i++){
+    tctx.save();
 
-    tctx.fillRect(
-        i*260 - (tagCameraX*0.3)%260,
-        330 + Math.sin(i)*20,
-        180,
-        180
-    );
-}
-
-/* PLATFORMS */
-
-tagPlatforms.forEach(p=>{
-
-    const drawX =
-    p.x - tagCameraX;
-
-    // grass
-    tctx.fillStyle = "#39ff5a";
-
-    tctx.fillRect(
-        drawX,
-        p.y,
-        p.w,
-        10
+    tctx.scale(
+        tagZoom,
+        tagZoom
     );
 
-    // dirt
-    tctx.fillStyle = "#ff3b8d";
+    /* SKY */
 
-    tctx.fillRect(
-        drawX,
-        p.y+10,
-        p.w,
-        p.h-10
+    const sky =
+    tctx.createLinearGradient(
+        0,
+        0,
+        0,
+        700
     );
 
-    // grass detail
-    tctx.fillStyle = "#22cc44";
+    sky.addColorStop(
+        0,
+        "#4da6ff"
+    );
 
-    for(let i=0;i<p.w;i+=14){
+    sky.addColorStop(
+        1,
+        "#6be8ff"
+    );
+
+    tctx.fillStyle = sky;
+
+    tctx.fillRect(
+        0,
+        0,
+        4000,
+        1000
+    );
+
+    /* TREES */
+
+    for(let i=0;i<14;i++){
+
+        const tx =
+        i * 300 -
+        tagCameraX;
+
+        tctx.fillStyle =
+        "#a00088";
 
         tctx.fillRect(
-            drawX+i,
-            p.y-3,
-            6,
-            3
+            tx + 35,
+            560,
+            18,
+            90
         );
+
+        tctx.fillStyle =
+        "#00dd55";
+
+        tctx.beginPath();
+
+        tctx.arc(
+            tx + 45,
+            530,
+            40,
+            0,
+            Math.PI * 2
+        );
+
+        tctx.fill();
     }
-});
 
-/* TREES */
+    /* PLATFORMS */
 
-for(let i=0;i<14;i++){
+    tagPlatforms.forEach(p=>{
 
-    const tx =
-    i*300 - tagCameraX;
+        const drawX =
+        p.x - tagCameraX;
 
-    // trunk
-    tctx.fillStyle = "#a00088";
+        tctx.fillStyle =
+        "#39ff5a";
 
-    tctx.fillRect(
-        tx+35,
-        560,
-        18,
-        90
-    );
+        tctx.fillRect(
+            drawX,
+            p.y,
+            p.w,
+            10
+        );
 
-    // leaves
-    tctx.fillStyle = "#00dd55";
+        tctx.fillStyle =
+        "#ff3b8d";
 
-    tctx.beginPath();
+        tctx.fillRect(
+            drawX,
+            p.y + 10,
+            p.w,
+            p.h - 10
+        );
+    });
 
-    tctx.arc(
-        tx+45,
-        530,
-        40,
-        0,
-        Math.PI*2
-    );
+    /* PLAYERS */
 
-    tctx.fill();
-}
+    tagPlayers.forEach(player=>{
 
-/* PLAYERS */
+        tctx.shadowBlur = 20;
 
-drawPlayer(player1);
+        tctx.shadowColor =
+        player.it
+        ? "red"
+        : player.color;
 
-drawPlayer(player2);
+        tctx.fillStyle =
+        player.it
+        ? "red"
+        : player.color;
 
-/* IT TEXT */
+        tctx.fillRect(
+            player.x - tagCameraX,
+            player.y,
+            player.w,
+            player.h
+        );
 
-tctx.fillStyle = "white";
+        tctx.shadowBlur = 0;
 
-tctx.font = "20px Arial";
+        tctx.fillStyle =
+        "black";
 
-if(player1It){
+        tctx.fillRect(
+            player.x -
+            tagCameraX +
+            8,
+            player.y + 12,
+            6,
+            6
+        );
 
-    tctx.fillText(
-        "IT",
-        player1.x - tagCameraX + 5,
-        player1.y - 10
-    );
+        tctx.fillRect(
+            player.x -
+            tagCameraX +
+            24,
+            player.y + 12,
+            6,
+            6
+        );
 
-}else{
+        if(player.it){
 
-    tctx.fillText(
-        "IT",
-        player2.x - tagCameraX + 5,
-        player2.y - 10
-    );
-}
+            tctx.fillStyle =
+            "white";
 
-tctx.restore();
+            tctx.font =
+            "18px Arial";
+
+            tctx.fillText(
+                "IT",
+                player.x -
+                tagCameraX +
+                5,
+                player.y - 10
+            );
+        }
+
+    });
+
+    tctx.restore();
 
     /* =========================
     HUD
     ========================= */
 
-    tctx.fillStyle = "white";
+    tctx.fillStyle =
+    "white";
 
-    tctx.font = "28px Arial";
+    tctx.font =
+    "28px Arial";
 
     tctx.fillText(
-        "Time: " + tagTimer,
+        "Time: " +
+        tagTimer,
         20,
         40
     );
 
+    const currentIt =
+    tagPlayers.findIndex(
+        p=>p.it
+    ) + 1;
+
     tctx.fillText(
-        player1It
-        ? "Player 1 is IT"
-        : "Player 2 is IT",
+        "Player " +
+        currentIt +
+        " is IT",
         20,
         80
     );
 
-    tctx.font = "18px Arial";
+    tctx.font =
+    "18px Arial";
 
     tctx.fillText(
-        "P1: WASD   P2: Arrow Keys",
+        "P1 WASD | P2 Arrows | P3 IJKL | P4 TFGH",
         20,
         115
     );
 }
 
-resetTag();
+/* =========================
+START GAME
+========================= */
 
+resetTag();
 tagLoop();
  </script>
 </body>
