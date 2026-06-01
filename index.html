@@ -8775,6 +8775,8 @@ function createTagPlayer(x,color,controls){
         color:color,
 
         controls:controls
+
+        it:false
     };
 }
 
@@ -8951,7 +8953,9 @@ function resetTag(){
 
     buildTagPlayers();
 
-    tagPlayers.forEach(p=>p.it=false);
+    tagPlayers.forEach(p=>{
+        p.it = false;
+    });
 
     tagPlayers[0].it = true;
 
@@ -8960,6 +8964,7 @@ function resetTag(){
     tagCameraX = 0;
 
     tagMenuOpen = true;
+    console.log(tagPlayers);
 }
 
 /* =========================
@@ -9429,6 +9434,16 @@ if(focusPlayer){
         40
     );
 
+    const itIndex =
+    tagPlayers.findIndex(p=>p.it);
+
+    tctx.fillText(
+    itIndex >= 0
+        ? `Player ${itIndex + 1} is IT`
+        : "No player is IT",
+    20,
+    80
+    );
     const currentIt =
     tagPlayers.findIndex(
         p=>p.it
